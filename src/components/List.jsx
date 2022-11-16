@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import Todo from "./Todo";
 
-const List = () => {
+const List = (props) => {
   return (
     <StListDiv>
       <StTodosDiv>
-        <Todo />
+        <Todo props={props} />
       </StTodosDiv>
     </StListDiv>
   );

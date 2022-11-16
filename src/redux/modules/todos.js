@@ -45,18 +45,38 @@ export const updateTodos = createAsyncThunk(
 );
 
 export const deleteTodos = createAsyncThunk(
-  "todos/deleteTodos",
+  "todos/updateTodos",
   async (payload, thunkAPI) => {
-    try {
-      const data = await axios.delete(
-        process.env.REACT_APP_HOST + `/todos/${payload}`
-      );
-      return thunkAPI.fulfillWithValue(data);
-    } catch (error) {
-      thunkAPI.rejectWithValue(error);
+    for (let i = 0; i < payload.length; i++) {
+      try {
+        const data = await axios.delete(
+          process.env.REACT_APP_HOST + `/todos/${payload}`,
+          payload
+        );
+        return thunkAPI.fulfillWithValue(data);
+      } catch (error) {
+        thunkAPI.rejectWithValue(error);
+      }
     }
   }
 );
+
+// export const deleteTodos = createAsyncThunk(
+//   "todos/deleteTodos",
+//   async (payload, thunkAPI) => {
+//     for (let i = 0; i < payload.length; i++) {
+//       await Promise.all(
+//         axios.delete(process.env.REACT_APP_HOST + `/todos/${payload[i]}`)
+//       )
+//         .then((res) => {
+//           console.log(res);
+//         })
+//         .catch((error) => {
+//           console.log(error.message);
+//         });
+//     }
+//   }
+// );
 
 export const todos = createSlice({
   name: "todos",
@@ -82,11 +102,32 @@ export const todos = createSlice({
       state.isLoading = true;
     },
     [createTodos.fulfilled]: (state, action) => {
-      console.log(action);
       state.isLoading = false;
       state.todos.push(action.payload.data);
     },
     [createTodos.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    [deleteTodos.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [deleteTodos.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      let length = action.meta.arg.length;
+      for (let i = 0; i < length; i++) {
+        let index = state.todos.findIndex(
+          (todo) => todo.id === action.meta.arg[i]
+        );
+        state.todos.splice(index, 1);
+
+        console.log(index);
+        console.log(current(state.todos));
+        console.log(action.meta.arg[i]);
+      }
+    },
+
+    [deleteTodos.rejected]: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },
