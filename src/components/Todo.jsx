@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTodos } from "../redux/modules/todos";
 
@@ -8,9 +8,6 @@ const Todo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { todos } = useSelector((state) => state.todos);
-
-  // const [todos, setTodos] = useState([]);
-
   useEffect(() => {
     dispatch(fetchTodos());
   }, []);
@@ -24,7 +21,7 @@ const Todo = () => {
               <input type="checkbox" id={todo.id} value={todo.id} />
               <div
                 onClick={() => {
-                  navigate(":id");
+                  navigate("/" + todo.id);
                 }}
                 style={{ display: "flex", gap: "10px" }}
                 //hover 넣기
