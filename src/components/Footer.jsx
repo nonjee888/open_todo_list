@@ -1,7 +1,16 @@
-import React from "react";
+import styled from "styled-components";
 
 const Footer = () => {
-  return <div>Footer</div>;
+  return <StFooter>2022.11.16 FrontEnd 노은지</StFooter>;
 };
 
 export default Footer;
+
+const StFooter = styled.div`
+  height: 40px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  background-color: #ececec;
+`;
