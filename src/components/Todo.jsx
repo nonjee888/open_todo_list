@@ -39,7 +39,10 @@ const Todo = () => {
 };
 
 export default Todo;
-const StTodoUl = styled.ul``;
+const StTodoUl = styled.ul`
+  list-style: none;
+  padding-inline-start: 0;
+`;
 const StTodoLi = styled.li`
   width: 100%;
   margin-bottom: 10px;
@@ -53,4 +56,3 @@ const StTodoLi = styled.li`
 const StIdDiv = styled.div``;
 const StTextDiv = styled.div``;
 const StDeadLineDiv = styled.div``;
-const StEditButton = styled.button``;
