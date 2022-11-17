@@ -9,20 +9,17 @@ const Form = () => {
   const [text, setText] = useState("");
   const [deadLine, setDeadLine] = useState("");
   const [checkedItems, setCheckedItems] = useState([]);
+  const [query, setQuery] = useState("");
 
   // 오늘 날짜 밀리세컨으로 변환
-  const timeStamp = new Date();
-  const year = timeStamp.getFullYear();
-  const month = ("0" + (1 + timeStamp.getMonth())).slice(-2);
-  const day = ("0" + timeStamp.getDate()).slice(-2);
-  const today = year + "-" + month + "-" + day;
-  const todayMil = Date.parse(today);
+  let date = new Date().toISOString().split("T")[0];
+  const today = Date.parse(date);
 
   // 선택된 날짜 밀리세컨으로 변환
   const selectedDate = Date.parse(deadLine);
 
   useEffect(() => {
-    if (selectedDate < todayMil) {
+    if (selectedDate < today) {
       alert("현재 보다 이전의 날짜는 설정할 수 없습니다.");
       setDeadLine("");
     }
@@ -50,6 +47,11 @@ const Form = () => {
       }
     }
   };
+
+  const handleSearch = (e) => {
+    setQuery(e.target.value);
+  };
+
   return (
     <>
       <StForm onSubmit={onSubmitHandler}>
@@ -67,13 +69,24 @@ const Form = () => {
             required
             onChange={(e) => setDeadLine(e.target.value)}
           />
-          <button type="submit">등록</button>
-          <button type="button" onClick={onDeleteHandler}>
+          <StButton type="submit">등록</StButton>
+          <StButton type="button" onClick={onDeleteHandler}>
             삭제
-          </button>
+          </StButton>
+          <StSearchInput
+            type="search"
+            value={query}
+            onChange={handleSearch}
+            placeholder="검색어를 입력하세요"
+          />
         </StElementsDiv>
       </StForm>
-      <List checkedItems={checkedItems} setCheckedItems={setCheckedItems} />
+
+      <List
+        checkedItems={checkedItems}
+        setCheckedItems={setCheckedItems}
+        query={query}
+      />
     </>
   );
 };
@@ -91,6 +104,17 @@ const StElementsDiv = styled.div`
   gap: 20px;
 `;
 const StInput = styled.input`
+  margin: 20px 0 20px 0;
+  width: 200px;
+  height: 20px;
+`;
+const StButton = styled.button`
+  margin-top: 20px;
+  width: 50px;
+  height: 20px;
+`;
+const StSearchInput = styled.input`
+  margin-top: 20px;
   width: 200px;
   height: 20px;
 `;
