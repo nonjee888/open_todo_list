@@ -11,33 +11,32 @@ const TodoDetail = () => {
   const [detailTodo, setDetailTodo] = useState({});
 
   // 오늘 날짜 밀리세컨으로 변환
-  const nowToMilliSeconds = Date.now();
+  let date = new Date().toISOString().split("T")[0];
+  const today = Date.parse(date);
 
   // 선택된 날짜 밀리세컨으로 변환
-  const selectedDate = Date?.parse(detailTodo && detailTodo?.deadLine);
+  const selectedDate = Date.parse(detailTodo?.deadLine);
 
   // 1일
   const milliSeconds = 24 * 60 * 60 * 1000;
 
   // 몇일 남았는지 계산
-  const daysLeft =
-    Math.ceil((selectedDate - nowToMilliSeconds) / milliSeconds) || "";
+  const daysLeft = Math.ceil((selectedDate - today) / milliSeconds);
 
   useEffect(() => {
     getTodos(id);
-    if (id !== undefined) {
-      console.log(0 < daysLeft && daysLeft < 4);
+    if (detailTodo?.deadLine !== undefined) {
       setTimeout(() => {
-        if (!isNaN(daysLeft) && 0 < daysLeft && daysLeft < 4) {
+        if (0 < daysLeft && daysLeft < 4) {
           alert(`D-day 까지 ${daysLeft}일 남았습니다`);
-        } else if (!isNaN(daysLeft) && 1 > daysLeft && daysLeft > -2) {
+        } else if (daysLeft == 0) {
           alert("D-day입니다");
-        } else if (!isNaN(daysLeft) && daysLeft < -1) {
+        } else if (daysLeft < -1) {
           alert("기한이 지난 To Do 입니다!");
         }
       }, 300);
     }
-  }, []);
+  }, [detailTodo?.deadLine]);
 
   const getTodos = async () => {
     const { data } = await axios.get(
