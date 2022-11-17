@@ -14,25 +14,14 @@ const Todo = ({ props, todo }) => {
     }
   };
 
-  // 체크박스 전체 선택
-  const handleAllCheck = (checked) => {
-    if (checked) {
-      const idArray = [];
-      todo.forEach((el) => idArray.push(el.id));
-      setCheckedItems(idArray);
-    } else {
-      setCheckedItems([]);
-    }
-  };
-
   return (
     <>
-      <StTodoUl id="sTable">
+      <StTodoUl>
         <StTodoLi>
           <StInput
             id={todo.id}
             type="checkbox"
-            name="todoChecked"
+            name={`select-${todo.id}`}
             onChange={(e) => {
               handleSingleCheck(e.target.checked, todo.id);
             }}
@@ -58,9 +47,10 @@ export default Todo;
 const StTodoUl = styled.ul`
   list-style: none;
   padding-inline-start: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
 `;
 const StTodoLi = styled.li`
-  margin-bottom: 10px;
   height: 100px;
   list-style: none;
   align-items: center;

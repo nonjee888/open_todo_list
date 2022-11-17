@@ -1,36 +1,6 @@
 {
   "todos": [
     {
-      "text": "오늘의 할일",
-      "deadLine": "2022-11-26",
-      "id": 1
-    },
-    {
-      "text": "투두리스트 끝내버리기",
-      "deadLine": "2022-11-18",
-      "id": 2
-    },
-    {
-      "text": "ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ",
-      "deadLine": "2022-11-18",
-      "id": 3
-    },
-    {
-      "text": "페이지네이션",
-      "deadLine": "2022-12-03",
-      "id": 4
-    },
-    {
-      "text": "123123",
-      "deadLine": "2022-11-17",
-      "id": 5
-    },
-    {
-      "text": "asdfasdfasdf",
-      "deadLine": "2022-11-18",
-      "id": 6
-    },
-    {
       "text": "asdfsadfasdf3333",
       "deadLine": "2022-11-18",
       "id": 7

@@ -29,7 +29,7 @@ const TodoDetail = () => {
       setTimeout(() => {
         if (0 < daysLeft && daysLeft < 4) {
           alert(`D-day 까지 ${daysLeft}일 남았습니다`);
-        } else if (daysLeft == 0) {
+        } else if (daysLeft === 0) {
           alert("D-day입니다");
         } else if (daysLeft < -1) {
           alert("기한이 지난 To Do 입니다!");

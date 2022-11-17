@@ -6,29 +6,25 @@ import styled from "styled-components";
 const EditTodoModal = (props) => {
   const navigate = useNavigate();
   const { detailTodo, closeModal } = props;
+
   const initialState = {
     id: detailTodo.id,
     text: detailTodo.text,
     deadLine: detailTodo.deadLine,
   };
-  const [oldDetail, setOldDetail] = useState(initialState);
-  const [id, setId] = useState(oldDetail.id);
-  const [text, setText] = useState(oldDetail.text);
-  const [deadLine, setDeadLine] = useState(oldDetail.deadLine);
+
+  const [text, setText] = useState(initialState.text);
+  const [deadLine, setDeadLine] = useState(initialState.deadLine);
 
   // 오늘 날짜 밀리세컨으로 변환
-  const timeStamp = new Date();
-  const year = timeStamp.getFullYear();
-  const month = ("0" + (1 + timeStamp.getMonth())).slice(-2);
-  const day = ("0" + timeStamp.getDate()).slice(-2);
-  const today = year + "-" + month + "-" + day;
-  const todayMil = Date.parse(today);
+  let date = new Date().toISOString().split("T")[0];
+  const today = Date.parse(date);
 
   // 선택된 날짜 밀리세컨으로 변환
   const selectedDate = Date.parse(deadLine);
 
   useEffect(() => {
-    if (selectedDate < todayMil) {
+    if (selectedDate < today) {
       alert("현재 보다 이전의 날짜는 설정할 수 없습니다.");
       setDeadLine("");
     }
@@ -37,13 +33,13 @@ const EditTodoModal = (props) => {
   const onUpdateHandler = async (e) => {
     e.preventDefault();
     let req = {
-      id,
+      id: initialState.id,
       text,
       deadLine,
     };
     try {
       const data = await axios.put(
-        process.env.REACT_APP_HOST + `/todos/${id}`,
+        process.env.REACT_APP_HOST + `/todos/${initialState.id}`,
         req
       );
       if (data.statusText === "OK") {
@@ -58,7 +54,7 @@ const EditTodoModal = (props) => {
   return (
     <StEditTodoForm onSubmit={onUpdateHandler}>
       <StEditBox>
-        <StIdDiv>No.{oldDetail.id}</StIdDiv>
+        <StIdDiv>No.{initialState.id}</StIdDiv>
         <StTextDiv>
           내용
           <StInput

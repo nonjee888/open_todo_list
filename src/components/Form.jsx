@@ -1,9 +1,10 @@
 import List from "./List";
+import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import styled from "styled-components";
 import { createTodos } from "../redux/modules/todos";
 import { deleteTodos } from "../redux/modules/todos";
+
 const Form = () => {
   const dispatch = useDispatch();
   const [text, setText] = useState("");
@@ -25,7 +26,7 @@ const Form = () => {
     }
   }, [deadLine]);
 
-  const onSubmitHandler = async (e) => {
+  const onSubmitHandler = (e) => {
     let req = {
       text,
       deadLine,
@@ -38,7 +39,7 @@ const Form = () => {
 
   const onDeleteHandler = () => {
     if (checkedItems.length > 0) {
-      if (window.confirm("삭제할까요?") == true) {
+      if (window.confirm("삭제할까요?") === true) {
         dispatch(deleteTodos(checkedItems));
         setCheckedItems([]);
       } else {
@@ -60,10 +61,11 @@ const Form = () => {
             type="text"
             value={text}
             required
-            placeholder="To do를 입력하세요"
+            placeholder="투두를 입력하세요"
             onChange={(e) => setText(e.target.value)}
           />
           <StInput
+            style={{ cursor: "pointer" }}
             type="date"
             value={deadLine}
             required
@@ -95,26 +97,35 @@ export default Form;
 
 const StForm = styled.form`
   background-color: #ececec;
+  height: 100px;
 `;
 const StElementsDiv = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
-  margin: 15px 0 0 10px;
+  margin-left: 10px;
   gap: 20px;
 `;
 const StInput = styled.input`
-  margin: 20px 0 20px 0;
+  margin: 35px 0 20px 0;
   width: 200px;
-  height: 20px;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
 `;
 const StButton = styled.button`
-  margin-top: 20px;
+  margin-top: 35px;
   width: 50px;
-  height: 20px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  background: aliceblue;
 `;
 const StSearchInput = styled.input`
-  margin-top: 20px;
+  margin-top: 35px;
   width: 200px;
-  height: 20px;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
 `;
