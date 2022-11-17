@@ -1,17 +1,20 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTodos } from "../redux/modules/todos";
+import axios from "axios";
 
 const Todo = ({ props }) => {
   const { checkedItems, setCheckedItems } = props;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { todos } = useSelector((state) => state.todos);
+
   useEffect(() => {
     dispatch(fetchTodos());
   }, []);
+
   // 체크 될 아이템 담을 배열
 
   // 체크박스 선택
@@ -37,7 +40,7 @@ const Todo = ({ props }) => {
   return (
     <>
       <StTodoUl id="sTable">
-        {todos.map((todo) => {
+        {todos.map((todo, idx) => {
           return (
             <StTodoLi style={{ display: "flex", gap: "10px" }} key={todo.id}>
               <input
@@ -56,7 +59,6 @@ const Todo = ({ props }) => {
                 style={{ display: "flex", gap: "10px" }}
                 //hover 넣기
               >
-                <StIdDiv>No.{todo.id}</StIdDiv>
                 <StTextDiv>{todo.text}</StTextDiv>
                 <StDeadLineDiv>{todo.deadLine}</StDeadLineDiv>
               </div>

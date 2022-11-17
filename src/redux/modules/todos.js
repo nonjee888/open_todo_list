@@ -45,38 +45,19 @@ export const updateTodos = createAsyncThunk(
 );
 
 export const deleteTodos = createAsyncThunk(
-  "todos/updateTodos",
+  "todos/deleteTodos",
   async (payload, thunkAPI) => {
     for (let i = 0; i < payload.length; i++) {
       try {
-        const data = await axios.delete(
-          process.env.REACT_APP_HOST + `/todos/${payload}`,
-          payload
-        );
+        const data = await // Promise.all(
+        axios.delete(process.env.REACT_APP_HOST + `/todos/${payload[i]}`);
         return thunkAPI.fulfillWithValue(data);
       } catch (error) {
-        thunkAPI.rejectWithValue(error);
+        return thunkAPI.rejectWithValue(error);
       }
     }
   }
 );
-
-// export const deleteTodos = createAsyncThunk(
-//   "todos/deleteTodos",
-//   async (payload, thunkAPI) => {
-//     for (let i = 0; i < payload.length; i++) {
-//       await Promise.all(
-//         axios.delete(process.env.REACT_APP_HOST + `/todos/${payload[i]}`)
-//       )
-//         .then((res) => {
-//           console.log(res);
-//         })
-//         .catch((error) => {
-//           console.log(error.message);
-//         });
-//     }
-//   }
-// );
 
 export const todos = createSlice({
   name: "todos",
@@ -120,10 +101,6 @@ export const todos = createSlice({
           (todo) => todo.id === action.meta.arg[i]
         );
         state.todos.splice(index, 1);
-
-        console.log(index);
-        console.log(current(state.todos));
-        console.log(action.meta.arg[i]);
       }
     },
 
