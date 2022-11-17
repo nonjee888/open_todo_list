@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -15,6 +15,24 @@ const EditTodoModal = (props) => {
   const [id, setId] = useState(oldDetail.id);
   const [text, setText] = useState(oldDetail.text);
   const [deadLine, setDeadLine] = useState(oldDetail.deadLine);
+
+  // 오늘 날짜 밀리세컨으로 변환
+  const timeStamp = new Date();
+  const year = timeStamp.getFullYear();
+  const month = ("0" + (1 + timeStamp.getMonth())).slice(-2);
+  const day = ("0" + timeStamp.getDate()).slice(-2);
+  const today = year + "-" + month + "-" + day;
+  const todayMil = Date.parse(today);
+
+  // 선택된 날짜 밀리세컨으로 변환
+  const selectedDate = Date.parse(deadLine);
+
+  useEffect(() => {
+    if (selectedDate < todayMil) {
+      alert("현재 보다 이전의 날짜는 설정할 수 없습니다.");
+      setDeadLine("");
+    }
+  }, [deadLine]);
 
   const onUpdateHandler = async (e) => {
     e.preventDefault();
@@ -42,8 +60,8 @@ const EditTodoModal = (props) => {
       <StEditBox>
         <StIdDiv>No.{oldDetail.id}</StIdDiv>
         <StTextDiv>
-          내용 :
-          <input
+          내용
+          <StInput
             required
             onChange={(e) => {
               setText(e.target.value);
@@ -52,8 +70,8 @@ const EditTodoModal = (props) => {
           />
         </StTextDiv>
         <StDeadLineDiv>
-          기한 :
-          <input
+          기한
+          <StInput
             type="date"
             required
             onChange={(e) => {
@@ -62,15 +80,17 @@ const EditTodoModal = (props) => {
             value={deadLine}
           />
         </StDeadLineDiv>
-        <StEditButton type="submit">수정</StEditButton>
-        <button
-          type="button"
-          onClick={() => {
-            closeModal(true);
-          }}
-        >
-          닫기
-        </button>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <StEditButton type="submit">수정</StEditButton>
+          <StDeleteButton
+            type="button"
+            onClick={() => {
+              closeModal(true);
+            }}
+          >
+            닫기
+          </StDeleteButton>
+        </div>
       </StEditBox>
     </StEditTodoForm>
   );
@@ -91,8 +111,8 @@ const StEditTodoForm = styled.form`
 const StEditBox = styled.div`
   padding: 30px;
   position: absolute;
-  top: calc(50vh - 250px);
-  left: calc(50vw - 320px);
+  top: calc(50vh - 220px);
+  left: calc(50vw - 230px);
   background-color: white;
   display: block;
   text-align: center;
@@ -102,7 +122,35 @@ const StEditBox = styled.div`
   height: 300px;
 `;
 
-const StIdDiv = styled.div``;
-const StTextDiv = styled.div``;
-const StDeadLineDiv = styled.div``;
-const StEditButton = styled.button``;
+const StIdDiv = styled.div`
+  margin-top: 30px;
+`;
+
+const StTextDiv = styled.div`
+  margin-top: 40px;
+`;
+
+const StInput = styled.input`
+  margin-left: 10px;
+  width: 200px;
+`;
+
+const StDeadLineDiv = styled.div`
+  margin-top: 30px;
+`;
+
+const StEditButton = styled.button`
+  margin: 50px 0 0 100px;
+  width: 100px;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+`;
+
+const StDeleteButton = styled.button`
+  margin-top: 50px;
+  width: 100px;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+`;

@@ -46,15 +46,17 @@ export const updateTodos = createAsyncThunk(
 
 export const deleteTodos = createAsyncThunk(
   "todos/deleteTodos",
-  async (payload, thunkAPI) => {
+  async (payload) => {
     for (let i = 0; i < payload.length; i++) {
-      try {
-        const data = await // Promise.all(
-        axios.delete(process.env.REACT_APP_HOST + `/todos/${payload[i]}`);
-        return thunkAPI.fulfillWithValue(data);
-      } catch (error) {
-        return thunkAPI.rejectWithValue(error);
-      }
+      await Promise.all(
+        axios.delete(process.env.REACT_APP_HOST + `/todos/${payload[i]}`)
+      )
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
     }
   }
 );

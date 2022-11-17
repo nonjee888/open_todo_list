@@ -9,8 +9,8 @@ export default Header;
 const StHeader = styled.div`
   font-size: 40px;
   display: flex;
+  justify-content: center;
   align-items: center;
-  padding-left: 10px;
   height: 100px;
   width: 100%;
   background-color: #ecec;

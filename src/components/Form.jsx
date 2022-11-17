@@ -7,7 +7,6 @@ import { deleteTodos } from "../redux/modules/todos";
 const Form = () => {
   const dispatch = useDispatch();
   const [text, setText] = useState("");
-  const [date, setDate] = useState("");
   const [deadLine, setDeadLine] = useState("");
   const [checkedItems, setCheckedItems] = useState([]);
 
@@ -18,6 +17,7 @@ const Form = () => {
   const day = ("0" + timeStamp.getDate()).slice(-2);
   const today = year + "-" + month + "-" + day;
   const todayMil = Date.parse(today);
+
   // 선택된 날짜 밀리세컨으로 변환
   const selectedDate = Date.parse(deadLine);
 
@@ -35,8 +35,10 @@ const Form = () => {
     };
     e.preventDefault();
     dispatch(createTodos(req));
+    setText("");
+    setDeadLine("");
   };
-  console.log(checkedItems);
+
   const onDeleteHandler = () => {
     if (checkedItems.length > 0) {
       if (window.confirm("삭제할까요?") == true) {
@@ -52,13 +54,14 @@ const Form = () => {
     <>
       <StForm onSubmit={onSubmitHandler}>
         <StElementsDiv>
-          <input
+          <StInput
             type="text"
             value={text}
             required
+            placeholder="To do를 입력하세요"
             onChange={(e) => setText(e.target.value)}
           />
-          <input
+          <StInput
             type="date"
             value={deadLine}
             required
@@ -77,9 +80,17 @@ const Form = () => {
 
 export default Form;
 
-const StForm = styled.form``;
+const StForm = styled.form`
+  background-color: #ececec;
+`;
 const StElementsDiv = styled.div`
-  align-items: center;
   display: flex;
-  gap: 10px;
+  width: 100%;
+  justify-content: center;
+  margin: 15px 0 0 10px;
+  gap: 20px;
+`;
+const StInput = styled.input`
+  width: 200px;
+  height: 20px;
 `;

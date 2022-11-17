@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTodos } from "../redux/modules/todos";
-import axios from "axios";
 
 const Todo = ({ props }) => {
   const { checkedItems, setCheckedItems } = props;
@@ -40,10 +39,10 @@ const Todo = ({ props }) => {
   return (
     <>
       <StTodoUl id="sTable">
-        {todos.map((todo, idx) => {
+        {todos.map((todo) => {
           return (
-            <StTodoLi style={{ display: "flex", gap: "10px" }} key={todo.id}>
-              <input
+            <StTodoLi key={todo.id}>
+              <StInput
                 id={todo.id}
                 type="checkbox"
                 name="todoChecked"
@@ -52,16 +51,16 @@ const Todo = ({ props }) => {
                 }}
                 checked={checkedItems.includes(todo.id) ? true : false}
               />
-              <div
+
+              <StTextdiv
                 onClick={() => {
                   navigate("/" + todo.id);
                 }}
-                style={{ display: "flex", gap: "10px" }}
-                //hover 넣기
               >
-                <StTextDiv>{todo.text}</StTextDiv>
-                <StDeadLineDiv>{todo.deadLine}</StDeadLineDiv>
-              </div>
+                {todo.text}
+              </StTextdiv>
+
+              <div>{todo.deadLine}</div>
             </StTodoLi>
           );
         })}
@@ -76,7 +75,6 @@ const StTodoUl = styled.ul`
   padding-inline-start: 0;
 `;
 const StTodoLi = styled.li`
-  width: 100%;
   margin-bottom: 10px;
   height: 100px;
   list-style: none;
@@ -84,7 +82,18 @@ const StTodoLi = styled.li`
   padding-left: 10px;
   cursor: pointer;
   background-color: aliceblue;
+  display: grid;
+  grid-template-columns: 5% 70% 20%;
+  gap: 20px;
 `;
-const StIdDiv = styled.div``;
-const StTextDiv = styled.div``;
-const StDeadLineDiv = styled.div``;
+const StInput = styled.input`
+  width: 20px;
+  height: 20px;
+`;
+const StTextdiv = styled.div`
+  &:hover {
+    color: #0071ce;
+    font-weight: bold;
+    font-size: large;
+  }
+`;
