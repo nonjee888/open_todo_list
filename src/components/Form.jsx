@@ -2,8 +2,7 @@ import List from "./List";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { createTodos } from "../redux/modules/todos";
-import { deleteTodos } from "../redux/modules/todos";
+import { createTodos, deleteTodos } from "../redux/modules/todos";
 import nextId from "react-id-generator";
 
 const Form = () => {
@@ -64,7 +63,7 @@ const Form = () => {
             (todo) => todo.id === checkedItems[i]
           );
           if (index > -1) {
-            Promise.all(localTodos.splice(index, 1));
+            localTodos.splice(index, 1);
           }
 
           // 삭제된 배열을 다시 로컬스토리지에 넣어줌
@@ -103,6 +102,7 @@ const Form = () => {
             type="date"
             value={deadLine}
             required
+            min={date}
             onChange={(e) => setDeadLine(e.target.value)}
           />
           <StButton type="submit">등록</StButton>

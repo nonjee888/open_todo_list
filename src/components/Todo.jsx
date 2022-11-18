@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-const Todo = ({ props, todo, idx }) => {
+const Todo = ({ props, todo }) => {
   const { checkedItems, setCheckedItems } = props;
   const navigate = useNavigate();
   const handleSingleCheck = (checked, id) => {
@@ -27,7 +27,7 @@ const Todo = ({ props, todo, idx }) => {
           />
           <StTextdiv
             onClick={() => {
-              window.location.replace("/" + todo.id);
+              navigate("/" + todo.id);
             }}
           >
             {todo.text}

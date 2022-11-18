@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import todos, { getTodos } from "../redux/modules/todos";
 import EditTodoModal from "./EditTodoModal";
 import EditLocalTodoModal from "./EditLocalTodoModal";
-import { useDispatch, useSelector } from "react-redux";
-import { getTodos } from "../redux/modules/todos";
 
 const TodoDetail = () => {
-  const { error, detail } = useSelector((state) => state?.todos);
+  const { error, detail, isLoading } = useSelector((state) => state?.todos);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -17,11 +17,16 @@ const TodoDetail = () => {
   const selectedDate = Date.parse(detail.deadLine) || "";
   const milliSeconds = 24 * 60 * 60 * 1000;
   const daysLeft = Math.ceil((selectedDate - today) / milliSeconds) || "";
-  console.log(detail.deadLine);
 
-  // console.log(daysLeft && 0 < daysLeft && daysLeft < 4);
   useEffect(() => {
     dispatch(getTodos(id));
+    return () => {
+      dispatch(todos.actions.clearDetail());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) return;
     if (detail?.deadLine !== undefined) {
       setTimeout(() => {
         if (!daysLeft) return;
@@ -29,12 +34,10 @@ const TodoDetail = () => {
           alert(`D-day 까지 ${daysLeft}일 남았습니다`);
         } else if (daysLeft === 0) {
           alert("D-day입니다");
-        } else if (daysLeft < -1) {
-          alert("기한이 지난 To Do 입니다!");
         }
       }, 500);
     }
-  }, [detail.deadLine && detail?.deadLine]);
+  }, [detail.deadLine]);
 
   const closeModal = () => {
     setModal(false);
@@ -60,8 +63,6 @@ const TodoDetail = () => {
           alert(`D-day 까지 ${daysLeft}일 남았습니다`);
         } else if (daysLeft === 0) {
           alert("D-day입니다");
-        } else if (daysLeft < -1) {
-          alert("기한이 지난 To Do 입니다!");
         }
       }, 500);
     }
@@ -94,7 +95,7 @@ const TodoDetail = () => {
 
           <StGoBackButton
             onClick={() => {
-              window.location.replace("/");
+              navigate("/");
             }}
           >
             이전

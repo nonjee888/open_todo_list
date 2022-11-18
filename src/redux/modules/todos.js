@@ -62,9 +62,9 @@ export const deleteTodos = createAsyncThunk(
   "todos/deleteTodos",
   async (payload) => {
     for (let i = 0; i < payload.length; i++) {
-      await Promise.all(
-        axios.delete(process.env.REACT_APP_HOST + `/todos/${payload[i]}`)
-      )
+      await axios
+        .delete(process.env.REACT_APP_HOST + `/todos/${payload[i]}`)
+
         .then((res) => {
           console.log(res);
         })
@@ -83,7 +83,11 @@ export const todos = createSlice({
     isLoading: false,
     error: null,
   },
-  redecers: {},
+  reducers: {
+    clearDetail: (state, action) => {
+      state.detail = {};
+    },
+  },
   extraReducers: {
     [fetchTodos.pending]: (state) => {
       state.isLoading = true;
