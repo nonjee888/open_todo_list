@@ -1,16 +1,18 @@
 import List from "./List";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createTodos } from "../redux/modules/todos";
 import { deleteTodos } from "../redux/modules/todos";
-
+var id = 1;
 const Form = () => {
-  const dispatch = useDispatch();
+  id = id++;
   const [text, setText] = useState("");
   const [deadLine, setDeadLine] = useState("");
   const [checkedItems, setCheckedItems] = useState([]);
   const [query, setQuery] = useState("");
+  const [todos, setTodos] = useState([]);
+  const dispatch = useDispatch();
 
   // 오늘 날짜 밀리세컨으로 변환
   let date = new Date().toISOString().split("T")[0];
@@ -26,12 +28,21 @@ const Form = () => {
     }
   }, [deadLine]);
 
+  // 로컬스토리지에 저장 할 배열 생성
+  let todoArr = [];
+
   const onSubmitHandler = (e) => {
+    e.preventDefault();
     let req = {
+      id: id++,
       text,
       deadLine,
     };
-    e.preventDefault();
+
+    // 로컬스토리지에 추가
+    todoArr = JSON.parse(localStorage.getItem("allTodos")) || [];
+    todoArr.push(req);
+    localStorage.setItem("allTodos", JSON.stringify(todoArr));
     dispatch(createTodos(req));
     setText("");
     setDeadLine("");
@@ -40,6 +51,23 @@ const Form = () => {
   const onDeleteHandler = () => {
     if (checkedItems.length > 0) {
       if (window.confirm("삭제할까요?") === true) {
+        // 로컬스토리지의 투두들을 리스트로 변환
+        const todosFromLocalStorage = localStorage.getItem("allTodos");
+        const localTodos = JSON.parse(todosFromLocalStorage);
+        // 로컬스토리지에서 삭제 로직
+        for (let i = 0; i < checkedItems.length; i++) {
+          const index = localTodos.findIndex(
+            (todo) => todo.id === checkedItems[i]
+          );
+          if (index > -1) {
+            Promise.all(localTodos.splice(index, 1));
+          }
+          // 삭제된 배열을 다시 로컬스토리지에 넣어줌
+          let allTodos = JSON.stringify(localTodos);
+          localStorage.setItem("allTodos", allTodos);
+        }
+
+        // 일반 로직
         dispatch(deleteTodos(checkedItems));
         setCheckedItems([]);
       } else {
@@ -88,6 +116,8 @@ const Form = () => {
         checkedItems={checkedItems}
         setCheckedItems={setCheckedItems}
         query={query}
+        todos={todos}
+        setTodos={setTodos}
       />
     </>
   );

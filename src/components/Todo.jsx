@@ -27,7 +27,6 @@ const Todo = ({ props, todo }) => {
             }}
             checked={checkedItems.includes(todo.id) ? true : false}
           />
-
           <StTextdiv
             onClick={() => {
               navigate("/" + todo.id);
@@ -35,7 +34,6 @@ const Todo = ({ props, todo }) => {
           >
             {todo.text}
           </StTextdiv>
-
           <div>{todo.deadLine}</div>
         </StTodoLi>
       </StTodoUl>

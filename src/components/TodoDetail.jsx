@@ -38,11 +38,62 @@ const TodoDetail = () => {
     }
   }, [detailTodo?.deadLine]);
 
+  // 로컬스토리지의 투두들을 리스트로 변환
+  const todosFromLocalStorage = localStorage.getItem("allTodos");
+  const localTodos = JSON.parse(todosFromLocalStorage);
+
+  // filter로 param과 투두 id와 일치하는 투두 찾기
+
+  const localTodosDetail = localTodos.filter((detail) => {
+    console.log(detail.id);
+    return detail.id === Number(id);
+  });
+
   const getTodos = async () => {
-    const { data } = await axios.get(
-      process.env.REACT_APP_HOST + `/todos/${id}`
-    );
-    setDetailTodo(data && data);
+    try {
+      const { data } = await axios.get(
+        process.env.REACT_APP_HOST + `/todos/${id}`
+      );
+      setDetailTodo(data && data);
+    } catch (error) {
+      if (error) {
+        return (
+          <StDetailDiv>
+            <StWrapperDiv>
+              {modal ? (
+                <EditTodoModal
+                  localTodosDetail={localTodosDetail}
+                  closeModal={closeModal}
+                />
+              ) : null}
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <StIdDiv>No.{localTodosDetail.id}</StIdDiv>
+                <StDeadLineDiv>
+                  D-Day: {localTodosDetail.deadLine}
+                </StDeadLineDiv>
+              </div>
+              <StTextDiv>{localTodosDetail.text}</StTextDiv>
+
+              <StEditButton
+                onClick={() => {
+                  setModal(true);
+                }}
+              >
+                수정
+              </StEditButton>
+
+              <StGoBackButton
+                onClick={() => {
+                  navigate(-1);
+                }}
+              >
+                이전
+              </StGoBackButton>
+            </StWrapperDiv>
+          </StDetailDiv>
+        );
+      }
+    }
   };
 
   const closeModal = () => {
