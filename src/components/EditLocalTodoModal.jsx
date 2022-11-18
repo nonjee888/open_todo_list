@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
+/* 로컬스토리지 데이터 수정용 모달 */
+
 const EditLocalTodoModal = (props) => {
   const navigate = useNavigate();
   const { closeModal, localTodosDetail } = props;

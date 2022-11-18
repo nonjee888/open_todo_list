@@ -1,12 +1,13 @@
 import List from "./List";
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createTodos } from "../redux/modules/todos";
 import { deleteTodos } from "../redux/modules/todos";
-var id = 1;
+import nextId from "react-id-generator";
+
 const Form = () => {
-  id = id++;
+  const id = nextId();
   const [text, setText] = useState("");
   const [deadLine, setDeadLine] = useState("");
   const [checkedItems, setCheckedItems] = useState([]);
@@ -31,7 +32,7 @@ const Form = () => {
   const onSubmitHandler = (e) => {
     e.preventDefault();
     let req = {
-      id: id++,
+      id,
       text,
       deadLine,
     };

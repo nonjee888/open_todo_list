@@ -1,13 +1,14 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import EditTodoModal from "./EditTodoModal";
 import EditLocalTodoModal from "./EditLocalTodoModal";
 import { useDispatch, useSelector } from "react-redux";
 import { getTodos } from "../redux/modules/todos";
 
 const TodoDetail = () => {
+  const idx = useLocation();
+  console.log(idx.state + 1);
   const { error, detail } = useSelector((state) => state.todos);
 
   const dispatch = useDispatch();
@@ -48,6 +49,8 @@ const TodoDetail = () => {
     setModal(false);
   };
 
+  /*--------------------- localStorage 투두 디테일 보여 줄 때 ---------------------*/
+
   // 로컬스토리지의 투두들을 리스트로 변환
   const todosFromLocalStorage = localStorage.getItem("allTodos");
   const localTodos = JSON.parse(todosFromLocalStorage);
@@ -57,9 +60,9 @@ const TodoDetail = () => {
   const localTodosDetail =
     localTodos &&
     localTodos.filter((detail) => {
-      return detail.id === Number(id);
+      return detail.id === id;
     });
-
+  console.log(localTodos);
   useEffect(() => {
     if (localTodosDetail[0]?.deadLine !== undefined) {
       setTimeout(() => {
@@ -83,7 +86,7 @@ const TodoDetail = () => {
       }, 500);
     }
   }, [localTodosDetail[0]?.deadLine]);
-
+  console.log(localTodosDetail);
   if (error) {
     return (
       <StDetailDiv>
@@ -96,7 +99,7 @@ const TodoDetail = () => {
             />
           ) : null}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <StIdDiv>No.{localTodosDetail[0].id}</StIdDiv>
+            <StIdDiv>{localTodosDetail[0].id}</StIdDiv>
             <StDeadLineDiv>D-Day: {localTodosDetail[0].deadLine}</StDeadLineDiv>
           </div>
           <StTextDiv>{localTodosDetail[0].text}</StTextDiv>
@@ -129,7 +132,7 @@ const TodoDetail = () => {
             <EditTodoModal detail={detail} closeModal={closeModal} />
           ) : null}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <StIdDiv>No.{detail.id}</StIdDiv>
+            <StIdDiv>{detail.id}</StIdDiv>
             <StDeadLineDiv>D-Day: {detail.deadLine}</StDeadLineDiv>
           </div>
           <StTextDiv>{detail.text}</StTextDiv>

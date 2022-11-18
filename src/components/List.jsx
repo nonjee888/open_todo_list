@@ -7,6 +7,7 @@ import Pagination from "./Pagenation";
 
 const List = (props) => {
   const { todos, error } = useSelector((state) => state.todos);
+
   const query = props.query;
   const dispatch = useDispatch();
 
@@ -16,10 +17,8 @@ const List = (props) => {
 
   // 해당 페이지에서의 마지막 todo의 index
   const indexOfLastTodo = currentPage * todosPerPage;
-
   // 해당 페이지에서 첫번째 todo의 index
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-
   // 각 페이지에서 보여질 투두 배열
   const currentTodos = todos?.slice(indexOfFirstTodo, indexOfLastTodo);
 
@@ -31,12 +30,15 @@ const List = (props) => {
   for (let i = 1; i <= Math.ceil(totalTodos / todosPerPage); i++) {
     pageNumber.push(i);
   }
+
   //  키워드 search시 페이지네이션된 투두 필터
   const filteredTodos = currentTodos.filter((todo) => {
     return todo.text.toLowerCase().includes(query.toLowerCase());
   });
 
-  /*----- localStorage 투두 보여 줄 때 -----*/
+  /*--------------------- localStorage 투두 보여 줄 때 ---------------------*/
+
+  let localPageNumber = [];
 
   // 로컬스토리지의 투두들을 리스트로 변환
   const todosFromLocalStorage = localStorage.getItem("allTodos");
@@ -53,7 +55,7 @@ const List = (props) => {
 
   // 페이지 계산
   for (let i = 1; i <= Math.ceil(totalLocalTodos / todosPerPage); i++) {
-    pageNumber.push(i);
+    localPageNumber.push(i);
   }
 
   // 키워드 search시 페이지네이션 된 로컬스토리지 투두 필터
@@ -77,7 +79,7 @@ const List = (props) => {
             );
           })}
         <StPageNumberUl>
-          {pageNumber.map((pageNum) => {
+          {localPageNumber.map((pageNum) => {
             return (
               <Pagination
                 pageNum={pageNum}
@@ -94,8 +96,8 @@ const List = (props) => {
 
   return (
     <>
-      {filteredTodos.map((todo) => {
-        return <Todo props={props} todo={todo} key={todo.id} />;
+      {filteredTodos.map((todo, idx) => {
+        return <Todo props={props} todo={todo} key={todo.id} idx={idx} />;
       })}
 
       <StPageNumberUl>

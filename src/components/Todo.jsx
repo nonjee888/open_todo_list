@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-const Todo = ({ props, todo }) => {
+const Todo = ({ props, todo, idx }) => {
   const { checkedItems, setCheckedItems } = props;
   const navigate = useNavigate();
 
@@ -29,12 +29,12 @@ const Todo = ({ props, todo }) => {
           />
           <StTextdiv
             onClick={() => {
-              navigate("/" + todo.id);
+              navigate("/" + todo.id, { state: idx });
             }}
           >
             {todo.text}
           </StTextdiv>
-          <div>{todo.deadLine}</div>
+          <div>D-Day : {todo.deadLine}</div>
         </StTodoLi>
       </StTodoUl>
     </>
