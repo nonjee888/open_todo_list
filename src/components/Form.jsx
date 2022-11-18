@@ -1,6 +1,6 @@
 import List from "./List";
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createTodos, deleteTodos } from "../redux/modules/todos";
 import nextId from "react-id-generator";
@@ -14,19 +14,8 @@ const Form = () => {
   const [todos, setTodos] = useState([]);
   const dispatch = useDispatch();
 
-  // 오늘 날짜 밀리세컨으로 변환
-  let date = new Date().toISOString().split("T")[0];
-  const today = Date.parse(date);
-
-  // 선택된 날짜 밀리세컨으로 변환
-  const selectedDate = Date.parse(deadLine);
-
-  useEffect(() => {
-    if (selectedDate < today) {
-      alert("현재 보다 이전의 날짜는 설정할 수 없습니다.");
-      setDeadLine("");
-    }
-  }, [deadLine]);
+  // 오늘 날짜
+  const todaysDate = new Date().toISOString().split("T")[0];
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
@@ -57,7 +46,7 @@ const Form = () => {
         const todosFromLocalStorage = localStorage.getItem("allTodos");
         const localTodos = JSON.parse(todosFromLocalStorage);
 
-        // 로컬스토리지에서 삭제 로직
+        // 로컬스토리지에서 삭제
         for (let i = 0; i < checkedItems.length; i++) {
           const index = localTodos.findIndex(
             (todo) => todo.id === checkedItems[i]
@@ -102,7 +91,7 @@ const Form = () => {
             type="date"
             value={deadLine}
             required
-            min={date}
+            min={todaysDate}
             onChange={(e) => setDeadLine(e.target.value)}
           />
           <StButton type="submit">등록</StButton>

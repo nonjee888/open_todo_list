@@ -15,8 +15,17 @@ const List = (props) => {
   const indexOfLastTodo = currentPage * todosPerPage;
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
 
+  // 키워드 search시 페이지네이션 된 투두를 필터
+  const filteredTodos =
+    todos &&
+    todos.filter((todo) => {
+      if (query === "") return todos;
+      const todoo = todo.text || "";
+      return todoo.toLowerCase().includes(query && query.toLowerCase());
+    });
+
   // 각 페이지에서 보여질 투두 배열
-  const currentTodos = todos?.slice(indexOfFirstTodo, indexOfLastTodo);
+  const currentTodos = filteredTodos?.slice(indexOfFirstTodo, indexOfLastTodo);
 
   // 페이지 나누기
   const pageNumber = [];
@@ -24,14 +33,6 @@ const List = (props) => {
   for (let i = 1; i <= Math.ceil(totalTodos / todosPerPage); i++) {
     pageNumber.push(i);
   }
-
-  // 키워드 search시 페이지네이션 된 투두를 필터
-  const filteredTodos =
-    currentTodos &&
-    currentTodos.filter((todo) => {
-      const todoo = todo.text || "";
-      return todoo.toLowerCase().includes(query && query.toLowerCase());
-    });
 
   /*--------------------- localStorage ---------------------*/
 
@@ -41,8 +42,17 @@ const List = (props) => {
   const todosFromLocalStorage = localStorage.getItem("allTodos");
   const localTodos = JSON.parse(todosFromLocalStorage);
 
+  // 키워드 search시 페이지네이션 된 로컬스토리지 투두 필터
+  const filteredLocalTodos =
+    localTodos &&
+    localTodos.filter((todo) => {
+      if (query === "") return localTodos;
+      const todoo = todo.text || "";
+      return todoo.toLowerCase().includes(query.toLowerCase());
+    });
+
   // 각 페이지에서 보여질 로컬스토리지의 투두 배열
-  const currentLocalTodos = localTodos?.slice(
+  const currentLocalTodos = filteredLocalTodos?.slice(
     indexOfFirstTodo,
     indexOfLastTodo
   );
@@ -53,15 +63,6 @@ const List = (props) => {
     localPageNumber.push(i);
   }
 
-  // 키워드 search시 페이지네이션 된 로컬스토리지 투두 필터
-  const filteredLocalTodos =
-    currentLocalTodos &&
-    currentLocalTodos.filter((todo) => {
-      if (query === "") return currentLocalTodos;
-      const todoo = todo.text || "";
-      return todoo.toLowerCase().includes(query.toLowerCase());
-    });
-
   useEffect(() => {
     dispatch(fetchTodos());
   }, []);
@@ -69,8 +70,8 @@ const List = (props) => {
   if (error) {
     return (
       <div>
-        {filteredLocalTodos &&
-          filteredLocalTodos.map((todo) => {
+        {currentLocalTodos &&
+          currentLocalTodos.map((todo) => {
             return (
               <Todo props={props} todo={todo} key={todo.id} error={error} />
             );
@@ -93,7 +94,7 @@ const List = (props) => {
 
   return (
     <>
-      {filteredTodos.map((todo, idx) => {
+      {currentTodos.map((todo, idx) => {
         return <Todo props={props} todo={todo} key={todo.id} idx={idx} />;
       })}
       <StPageNumberUl>

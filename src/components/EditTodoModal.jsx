@@ -14,15 +14,8 @@ const EditTodoModal = (props) => {
   const [text, setText] = useState(initialState.text);
   const [deadLine, setDeadLine] = useState(initialState.deadLine);
 
+  // 오늘 날짜
   const todaysDate = new Date().toISOString().split("T")[0];
-  const today = Date.parse(todaysDate);
-  const selectedDate = Date.parse(deadLine);
-  useEffect(() => {
-    if (selectedDate < today) {
-      alert("현재 보다 이전의 날짜는 설정할 수 없습니다.");
-      setDeadLine("");
-    }
-  }, [deadLine]);
 
   const onUpdateHandler = async (e) => {
     e.preventDefault();
@@ -68,6 +61,7 @@ const EditTodoModal = (props) => {
               setDeadLine(e.target.value);
             }}
             value={deadLine}
+            min={todaysDate}
           />
         </StDeadLineDiv>
         <div style={{ display: "flex", gap: "10px" }}>
