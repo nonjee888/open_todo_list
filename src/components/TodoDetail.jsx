@@ -76,7 +76,6 @@ const TodoDetail = () => {
             <EditLocalTodoModal
               localTodosDetail={localTodosDetail}
               closeModal={closeModal}
-              error={error}
             />
           ) : null}
           <div style={{ display: "flex", justifyContent: "space-between" }}>
