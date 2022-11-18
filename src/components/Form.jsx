@@ -14,7 +14,6 @@ const Form = () => {
   const [query, setQuery] = useState(localStorage.getItem("search"));
   const [todos, setTodos] = useState([]);
   const dispatch = useDispatch();
-  const searchTerm = localStorage.getItem("search");
 
   // 오늘 날짜 밀리세컨으로 변환
   let date = new Date().toISOString().split("T")[0];
@@ -106,7 +105,7 @@ const Form = () => {
           </StButton>{" "}
           <StSearchInput
             type="search"
-            value={query}
+            value={query || ""}
             onChange={handleSearch}
             placeholder="검색어를 입력하세요"
           />

@@ -8,7 +8,7 @@ import Pagination from "./Pagenation";
 const List = (props) => {
   const { todos, error } = useSelector((state) => state.todos);
 
-  const query = props.query;
+  const query = props.query || "";
   const dispatch = useDispatch();
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,10 +31,13 @@ const List = (props) => {
     pageNumber.push(i);
   }
 
-  //  키워드 search시 페이지네이션된 투두 필터
-  const filteredTodos = currentTodos.filter((todo) => {
-    return todo.text.toLowerCase().includes(query.toLowerCase());
-  });
+  // 키워드 search시 페이지네이션된 투두 필터
+  const filteredTodos =
+    currentTodos &&
+    currentTodos.filter((todo) => {
+      const todoo = todo.text || "";
+      return todoo.toLowerCase().includes(query && query.toLowerCase());
+    });
 
   /*--------------------- localStorage 투두 보여 줄 때 ---------------------*/
 
@@ -62,7 +65,9 @@ const List = (props) => {
   const filteredLocalTodos =
     currentLocalTodos &&
     currentLocalTodos.filter((todo) => {
-      return todo.text.toLowerCase().includes(query.toLowerCase());
+      if (query === "") return currentLocalTodos;
+      const todoo = todo.text || "";
+      return todoo.toLowerCase().includes(query.toLowerCase());
     });
 
   useEffect(() => {

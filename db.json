@@ -1,11 +1,6 @@
 {
   "todos": [
     {
-      "id": "id27",
-      "text": "안녕하세요ㅇㅇ",
-      "deadLine": "2022-11-24"
-    },
-    {
       "id": "id36",
       "text": "ㅎㅎㅎㅎㅎㅎㅎ",
       "deadLine": "2022-11-19"
@@ -14,6 +9,16 @@
       "id": "id45",
       "text": "ㅋㅋㅋㅋㅋㅋㅋ",
       "deadLine": "2022-11-26"
+    },
+    {
+      "id": "id10",
+      "text": "dddddd",
+      "deadLine": "2022-11-19"
+    },
+    {
+      "id": "id22",
+      "text": "sdsdsdsdsd",
+      "deadLine": "2022-11-19"
     }
   ]
 }
