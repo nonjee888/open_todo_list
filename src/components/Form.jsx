@@ -11,9 +11,10 @@ const Form = () => {
   const [text, setText] = useState("");
   const [deadLine, setDeadLine] = useState("");
   const [checkedItems, setCheckedItems] = useState([]);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(localStorage.getItem("search"));
   const [todos, setTodos] = useState([]);
   const dispatch = useDispatch();
+  const searchTerm = localStorage.getItem("search");
 
   // 오늘 날짜 밀리세컨으로 변환
   let date = new Date().toISOString().split("T")[0];
@@ -78,6 +79,7 @@ const Form = () => {
 
   const handleSearch = (e) => {
     setQuery(e.target.value);
+    localStorage.setItem("search", e.target.value);
   };
 
   return (
@@ -101,7 +103,7 @@ const Form = () => {
           <StButton type="submit">등록</StButton>
           <StButton type="button" onClick={onDeleteHandler}>
             삭제
-          </StButton>
+          </StButton>{" "}
           <StSearchInput
             type="search"
             value={query}

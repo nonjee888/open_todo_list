@@ -29,7 +29,7 @@ const Todo = ({ props, todo, idx }) => {
           />
           <StTextdiv
             onClick={() => {
-              navigate("/" + todo.id, { state: idx });
+              navigate("/" + todo.id);
             }}
           >
             {todo.text}

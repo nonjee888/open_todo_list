@@ -1,14 +1,12 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import EditTodoModal from "./EditTodoModal";
 import EditLocalTodoModal from "./EditLocalTodoModal";
 import { useDispatch, useSelector } from "react-redux";
 import { getTodos } from "../redux/modules/todos";
 
 const TodoDetail = () => {
-  const idx = useLocation();
-  console.log(idx.state + 1);
   const { error, detail } = useSelector((state) => state.todos);
 
   const dispatch = useDispatch();
@@ -62,7 +60,7 @@ const TodoDetail = () => {
     localTodos.filter((detail) => {
       return detail.id === id;
     });
-  console.log(localTodos);
+
   useEffect(() => {
     if (localTodosDetail[0]?.deadLine !== undefined) {
       setTimeout(() => {
@@ -86,7 +84,7 @@ const TodoDetail = () => {
       }, 500);
     }
   }, [localTodosDetail[0]?.deadLine]);
-  console.log(localTodosDetail);
+
   if (error) {
     return (
       <StDetailDiv>
