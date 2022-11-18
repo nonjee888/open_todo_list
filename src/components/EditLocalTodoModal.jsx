@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 /* 로컬스토리지 데이터 수정용 모달 */
-
 const EditLocalTodoModal = (props) => {
   const navigate = useNavigate();
   const { closeModal, localTodosDetail } = props;
@@ -17,11 +16,8 @@ const EditLocalTodoModal = (props) => {
   const [text, setText] = useState(initialState.text);
   const [deadLine, setDeadLine] = useState(initialState.deadLine);
 
-  // 오늘 날짜 밀리세컨으로 변환
-  let date = new Date().toISOString().split("T")[0];
-  const today = Date.parse(date);
-
-  // 선택된 날짜 밀리세컨으로 변환
+  const todaysDate = new Date().toISOString().split("T")[0];
+  const today = Date.parse(todaysDate);
   const selectedDate = Date.parse(deadLine);
 
   useEffect(() => {
@@ -50,11 +46,11 @@ const EditLocalTodoModal = (props) => {
       // 로컬스토리지의 투두들을 리스트로 변환
       const todosFromLocalStorage = localStorage.getItem("allTodos");
       const localTodos = JSON.parse(todosFromLocalStorage);
-      // 수정할 투두의 index 찾기
+      // 수정할 투두 index 찾기
       const index = localTodos.findIndex((todo) => todo.id === initialState.id);
       // 수정할 투두로 배열 원소 교체
       localTodos.splice(index, 1, req);
-      // 교체된 배열을 다시 로컬스토리지로 저장
+      // 교체된 배열 다시 로컬스토리지 저장
       let allTodos = JSON.stringify(localTodos);
       localStorage.setItem("allTodos", allTodos);
       navigate("/");
@@ -113,7 +109,6 @@ const StEditTodoForm = styled.form`
   right: 0;
   background: rgba(0, 0, 0, 0.3);
 `;
-
 const StEditBox = styled.div`
   padding: 30px;
   position: absolute;
@@ -127,24 +122,19 @@ const StEditBox = styled.div`
   width: 400px;
   height: 300px;
 `;
-
 const StIdDiv = styled.div`
   margin-top: 30px;
 `;
-
 const StTextDiv = styled.div`
   margin-top: 40px;
 `;
-
 const StInput = styled.input`
   margin-left: 10px;
   width: 200px;
 `;
-
 const StDeadLineDiv = styled.div`
   margin-top: 30px;
 `;
-
 const StEditButton = styled.button`
   margin: 50px 0 0 100px;
   width: 100px;
@@ -152,7 +142,6 @@ const StEditButton = styled.button`
   border: none;
   border-radius: 5px;
 `;
-
 const StDeleteButton = styled.button`
   margin-top: 50px;
   width: 100px;

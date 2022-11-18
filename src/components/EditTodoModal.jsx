@@ -6,23 +6,17 @@ import styled from "styled-components";
 const EditTodoModal = (props) => {
   const navigate = useNavigate();
   const { detail, closeModal } = props;
-
   const initialState = {
     id: detail.id,
     text: detail.text,
     deadLine: detail.deadLine,
   };
-
   const [text, setText] = useState(initialState.text);
   const [deadLine, setDeadLine] = useState(initialState.deadLine);
 
-  // 오늘 날짜 밀리세컨으로 변환
-  let date = new Date().toISOString().split("T")[0];
-  const today = Date.parse(date);
-
-  // 선택된 날짜 밀리세컨으로 변환
+  const todaysDate = new Date().toISOString().split("T")[0];
+  const today = Date.parse(todaysDate);
   const selectedDate = Date.parse(deadLine);
-
   useEffect(() => {
     if (selectedDate < today) {
       alert("현재 보다 이전의 날짜는 설정할 수 없습니다.");
@@ -103,7 +97,6 @@ const StEditTodoForm = styled.form`
   right: 0;
   background: rgba(0, 0, 0, 0.3);
 `;
-
 const StEditBox = styled.div`
   padding: 30px;
   position: absolute;
@@ -117,24 +110,19 @@ const StEditBox = styled.div`
   width: 400px;
   height: 300px;
 `;
-
 const StIdDiv = styled.div`
   margin-top: 30px;
 `;
-
 const StTextDiv = styled.div`
   margin-top: 40px;
 `;
-
 const StInput = styled.input`
   margin-left: 10px;
   width: 200px;
 `;
-
 const StDeadLineDiv = styled.div`
   margin-top: 30px;
 `;
-
 const StEditButton = styled.button`
   margin: 50px 0 0 100px;
   width: 100px;
@@ -142,7 +130,6 @@ const StEditButton = styled.button`
   border: none;
   border-radius: 5px;
 `;
-
 const StDeleteButton = styled.button`
   margin-top: 50px;
   width: 100px;

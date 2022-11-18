@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 const Todo = ({ props, todo, idx }) => {
   const { checkedItems, setCheckedItems } = props;
   const navigate = useNavigate();
-
-  // 체크박스 선택
   const handleSingleCheck = (checked, id) => {
     if (checked) {
       setCheckedItems((prev) => [...prev, id]);
@@ -29,7 +27,7 @@ const Todo = ({ props, todo, idx }) => {
           />
           <StTextdiv
             onClick={() => {
-              navigate("/" + todo.id);
+              window.location.replace("/" + todo.id);
             }}
           >
             {todo.text}

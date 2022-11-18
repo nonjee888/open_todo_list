@@ -7,54 +7,41 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTodos } from "../redux/modules/todos";
 
 const TodoDetail = () => {
-  const { error, detail } = useSelector((state) => state.todos);
-
+  const { error, detail } = useSelector((state) => state?.todos);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
   const [modal, setModal] = useState(false);
-  // const [detailTodo, setDetailTodo] = useState({});
-
-  // 오늘 날짜 밀리세컨으로 변환
-  let date = new Date().toISOString().split("T")[0];
-  const today = Date.parse(date);
-
-  // 선택된 날짜 밀리세컨으로 변환
-  const selectedDate = Date.parse(detail?.deadLine);
-
-  // 1일
+  const todaysDate = new Date().toISOString().split("T")[0];
+  const today = Date.parse(todaysDate);
+  const selectedDate = Date.parse(detail.deadLine) || "";
   const milliSeconds = 24 * 60 * 60 * 1000;
+  const daysLeft = Math.ceil((selectedDate - today) / milliSeconds) || "";
+  console.log(detail.deadLine);
 
-  // 몇일 남았는지 계산
-  const daysLeft = Math.ceil((selectedDate - today) / milliSeconds);
-
+  // console.log(daysLeft && 0 < daysLeft && daysLeft < 4);
   useEffect(() => {
     dispatch(getTodos(id));
     if (detail?.deadLine !== undefined) {
       setTimeout(() => {
-        if (0 < daysLeft && daysLeft < 4) {
+        if (!daysLeft) return;
+        if (daysLeft && 0 < daysLeft && daysLeft < 4) {
           alert(`D-day 까지 ${daysLeft}일 남았습니다`);
         } else if (daysLeft === 0) {
           alert("D-day입니다");
         } else if (daysLeft < -1) {
           alert("기한이 지난 To Do 입니다!");
         }
-      }, 300);
+      }, 500);
     }
-  }, [detail?.deadLine]);
+  }, [detail.deadLine && detail?.deadLine]);
 
   const closeModal = () => {
     setModal(false);
   };
-
-  /*--------------------- localStorage 투두 디테일 보여 줄 때 ---------------------*/
-
-  // 로컬스토리지의 투두들을 리스트로 변환
+  /*--------------------- localStorage ---------------------*/
   const todosFromLocalStorage = localStorage.getItem("allTodos");
   const localTodos = JSON.parse(todosFromLocalStorage);
-
-  // filter로 param과 투두 id와 일치하는 투두 찾기
-
   const localTodosDetail =
     localTodos &&
     localTodos.filter((detail) => {
@@ -63,17 +50,12 @@ const TodoDetail = () => {
 
   useEffect(() => {
     if (localTodosDetail[0]?.deadLine !== undefined) {
+      const todaysDate = new Date().toISOString().split("T")[0];
+      const today = Date.parse(todaysDate);
+      const selectedDate = Date.parse(localTodosDetail[0]?.deadLine);
+      const milliSeconds = 24 * 60 * 60 * 1000;
+      const daysLeft = Math.ceil((selectedDate - today) / milliSeconds);
       setTimeout(() => {
-        // 오늘 날짜 밀리세컨으로 변환
-        let date = new Date().toISOString().split("T")[0];
-        const today = Date.parse(date);
-        // 선택된 날짜 밀리세컨으로 변환
-        const selectedDate = Date.parse(localTodosDetail[0]?.deadLine);
-        // 1일
-        const milliSeconds = 24 * 60 * 60 * 1000;
-        // 몇일 남았는지 계산
-        const daysLeft = Math.ceil((selectedDate - today) / milliSeconds);
-
         if (0 < daysLeft && daysLeft < 4) {
           alert(`D-day 까지 ${daysLeft}일 남았습니다`);
         } else if (daysLeft === 0) {
@@ -112,7 +94,7 @@ const TodoDetail = () => {
 
           <StGoBackButton
             onClick={() => {
-              navigate(-1);
+              window.location.replace("/");
             }}
           >
             이전
@@ -145,7 +127,7 @@ const TodoDetail = () => {
 
           <StGoBackButton
             onClick={() => {
-              navigate(-1);
+              navigate("/");
             }}
           >
             이전
@@ -186,7 +168,6 @@ const StDeadLineDiv = styled.div`
   margin-top: 20px;
   font-weight: 600;
 `;
-
 const StEditButton = styled.button`
   width: 100px;
   height: 30px;
@@ -195,7 +176,6 @@ const StEditButton = styled.button`
   box-shadow: 0 2px 5px 1px rgb(64 60 67 / 16%);
   margin: 50px 0 0 100px;
 `;
-
 const StGoBackButton = styled.button`
   width: 100px;
   height: 30px;

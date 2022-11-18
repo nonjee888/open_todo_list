@@ -36,12 +36,16 @@ const Form = () => {
       text,
       deadLine,
     };
+
     // 로컬스토리지에 저장 할 배열 생성
     let todoArr = [];
+
     // 로컬스토리지에 추가
     todoArr = JSON.parse(localStorage.getItem("allTodos")) || [];
     todoArr.push(req);
     localStorage.setItem("allTodos", JSON.stringify(todoArr));
+
+    // API Post
     dispatch(createTodos(req));
     setText("");
     setDeadLine("");
@@ -53,6 +57,7 @@ const Form = () => {
         // 로컬스토리지의 투두들을 리스트로 변환
         const todosFromLocalStorage = localStorage.getItem("allTodos");
         const localTodos = JSON.parse(todosFromLocalStorage);
+
         // 로컬스토리지에서 삭제 로직
         for (let i = 0; i < checkedItems.length; i++) {
           const index = localTodos.findIndex(
@@ -61,12 +66,13 @@ const Form = () => {
           if (index > -1) {
             Promise.all(localTodos.splice(index, 1));
           }
+
           // 삭제된 배열을 다시 로컬스토리지에 넣어줌
           let allTodos = JSON.stringify(localTodos);
           localStorage.setItem("allTodos", allTodos);
         }
 
-        // API delete
+        // API Delete
         dispatch(deleteTodos(checkedItems));
         setCheckedItems([]);
       } else {
