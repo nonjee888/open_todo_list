@@ -3,19 +3,25 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import EditTodoModal from "./EditTodoModal";
+import EditLocalTodoModal from "./EditLocalTodoModal";
+import { useDispatch, useSelector } from "react-redux";
+import { getTodos } from "../redux/modules/todos";
 
 const TodoDetail = () => {
+  const { error, detail } = useSelector((state) => state.todos);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
   const [modal, setModal] = useState(false);
-  const [detailTodo, setDetailTodo] = useState({});
+  // const [detailTodo, setDetailTodo] = useState({});
 
   // 오늘 날짜 밀리세컨으로 변환
   let date = new Date().toISOString().split("T")[0];
   const today = Date.parse(date);
 
   // 선택된 날짜 밀리세컨으로 변환
-  const selectedDate = Date.parse(detailTodo?.deadLine);
+  const selectedDate = Date.parse(detail?.deadLine);
 
   // 1일
   const milliSeconds = 24 * 60 * 60 * 1000;
@@ -24,8 +30,8 @@ const TodoDetail = () => {
   const daysLeft = Math.ceil((selectedDate - today) / milliSeconds);
 
   useEffect(() => {
-    getTodos(id);
-    if (detailTodo?.deadLine !== undefined) {
+    dispatch(getTodos(id));
+    if (detail?.deadLine !== undefined) {
       setTimeout(() => {
         if (0 < daysLeft && daysLeft < 4) {
           alert(`D-day 까지 ${daysLeft}일 남았습니다`);
@@ -36,7 +42,11 @@ const TodoDetail = () => {
         }
       }, 300);
     }
-  }, [detailTodo?.deadLine]);
+  }, [detail?.deadLine]);
+
+  const closeModal = () => {
+    setModal(false);
+  };
 
   // 로컬스토리지의 투두들을 리스트로 변환
   const todosFromLocalStorage = localStorage.getItem("allTodos");
@@ -44,91 +54,104 @@ const TodoDetail = () => {
 
   // filter로 param과 투두 id와 일치하는 투두 찾기
 
-  const localTodosDetail = localTodos.filter((detail) => {
-    console.log(detail.id);
-    return detail.id === Number(id);
-  });
+  const localTodosDetail =
+    localTodos &&
+    localTodos.filter((detail) => {
+      return detail.id === Number(id);
+    });
 
-  const getTodos = async () => {
-    try {
-      const { data } = await axios.get(
-        process.env.REACT_APP_HOST + `/todos/${id}`
-      );
-      setDetailTodo(data && data);
-    } catch (error) {
-      if (error) {
-        return (
-          <StDetailDiv>
-            <StWrapperDiv>
-              {modal ? (
-                <EditTodoModal
-                  localTodosDetail={localTodosDetail}
-                  closeModal={closeModal}
-                />
-              ) : null}
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <StIdDiv>No.{localTodosDetail.id}</StIdDiv>
-                <StDeadLineDiv>
-                  D-Day: {localTodosDetail.deadLine}
-                </StDeadLineDiv>
-              </div>
-              <StTextDiv>{localTodosDetail.text}</StTextDiv>
+  useEffect(() => {
+    if (localTodosDetail[0]?.deadLine !== undefined) {
+      setTimeout(() => {
+        // 오늘 날짜 밀리세컨으로 변환
+        let date = new Date().toISOString().split("T")[0];
+        const today = Date.parse(date);
+        // 선택된 날짜 밀리세컨으로 변환
+        const selectedDate = Date.parse(localTodosDetail[0]?.deadLine);
+        // 1일
+        const milliSeconds = 24 * 60 * 60 * 1000;
+        // 몇일 남았는지 계산
+        const daysLeft = Math.ceil((selectedDate - today) / milliSeconds);
 
-              <StEditButton
-                onClick={() => {
-                  setModal(true);
-                }}
-              >
-                수정
-              </StEditButton>
-
-              <StGoBackButton
-                onClick={() => {
-                  navigate(-1);
-                }}
-              >
-                이전
-              </StGoBackButton>
-            </StWrapperDiv>
-          </StDetailDiv>
-        );
-      }
+        if (0 < daysLeft && daysLeft < 4) {
+          alert(`D-day 까지 ${daysLeft}일 남았습니다`);
+        } else if (daysLeft === 0) {
+          alert("D-day입니다");
+        } else if (daysLeft < -1) {
+          alert("기한이 지난 To Do 입니다!");
+        }
+      }, 500);
     }
-  };
+  }, [localTodosDetail[0]?.deadLine]);
 
-  const closeModal = () => {
-    setModal(false);
-  };
+  if (error) {
+    return (
+      <StDetailDiv>
+        <StWrapperDiv>
+          {modal ? (
+            <EditLocalTodoModal
+              localTodosDetail={localTodosDetail}
+              closeModal={closeModal}
+              error={error}
+            />
+          ) : null}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <StIdDiv>No.{localTodosDetail[0].id}</StIdDiv>
+            <StDeadLineDiv>D-Day: {localTodosDetail[0].deadLine}</StDeadLineDiv>
+          </div>
+          <StTextDiv>{localTodosDetail[0].text}</StTextDiv>
+
+          <StEditButton
+            onClick={() => {
+              setModal(true);
+            }}
+          >
+            수정
+          </StEditButton>
+
+          <StGoBackButton
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            이전
+          </StGoBackButton>
+        </StWrapperDiv>
+      </StDetailDiv>
+    );
+  }
 
   return (
-    <StDetailDiv>
-      <StWrapperDiv>
-        {modal ? (
-          <EditTodoModal detailTodo={detailTodo} closeModal={closeModal} />
-        ) : null}
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <StIdDiv>No.{detailTodo.id}</StIdDiv>
-          <StDeadLineDiv>D-Day: {detailTodo.deadLine}</StDeadLineDiv>
-        </div>
-        <StTextDiv>{detailTodo.text}</StTextDiv>
+    <>
+      <StDetailDiv>
+        <StWrapperDiv>
+          {modal ? (
+            <EditTodoModal detail={detail} closeModal={closeModal} />
+          ) : null}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <StIdDiv>No.{detail.id}</StIdDiv>
+            <StDeadLineDiv>D-Day: {detail.deadLine}</StDeadLineDiv>
+          </div>
+          <StTextDiv>{detail.text}</StTextDiv>
 
-        <StEditButton
-          onClick={() => {
-            setModal(true);
-          }}
-        >
-          수정
-        </StEditButton>
+          <StEditButton
+            onClick={() => {
+              setModal(true);
+            }}
+          >
+            수정
+          </StEditButton>
 
-        <StGoBackButton
-          onClick={() => {
-            navigate(-1);
-          }}
-        >
-          이전
-        </StGoBackButton>
-      </StWrapperDiv>
-    </StDetailDiv>
+          <StGoBackButton
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            이전
+          </StGoBackButton>
+        </StWrapperDiv>
+      </StDetailDiv>
+    </>
   );
 };
 

@@ -3,14 +3,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const EditTodoModal = (props) => {
+const EditLocalTodoModal = (props) => {
   const navigate = useNavigate();
-  const { detail, closeModal } = props;
-
+  const { closeModal, localTodosDetail } = props;
   const initialState = {
-    id: detail.id,
-    text: detail.text,
-    deadLine: detail.deadLine,
+    id: localTodosDetail[0].id,
+    text: localTodosDetail[0].text,
+    deadLine: localTodosDetail[0].deadLine,
   };
 
   const [text, setText] = useState(initialState.text);
@@ -46,8 +45,17 @@ const EditTodoModal = (props) => {
         navigate("/");
       }
     } catch {
-      alert("다시 시도해주세요!");
-      closeModal(false);
+      // 로컬스토리지의 투두들을 리스트로 변환
+      const todosFromLocalStorage = localStorage.getItem("allTodos");
+      const localTodos = JSON.parse(todosFromLocalStorage);
+      // 수정할 투두의 index 찾기
+      const index = localTodos.findIndex((todo) => todo.id === initialState.id);
+      // 수정할 투두로 배열 원소 교체
+      localTodos.splice(index, 1, req);
+      // 교체된 배열을 다시 로컬스토리지로 저장
+      let allTodos = JSON.stringify(localTodos);
+      localStorage.setItem("allTodos", allTodos);
+      navigate("/");
     }
   };
 
@@ -92,7 +100,7 @@ const EditTodoModal = (props) => {
   );
 };
 
-export default EditTodoModal;
+export default EditLocalTodoModal;
 
 const StEditTodoForm = styled.form`
   z-index: 99;

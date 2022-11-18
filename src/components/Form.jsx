@@ -28,9 +28,6 @@ const Form = () => {
     }
   }, [deadLine]);
 
-  // 로컬스토리지에 저장 할 배열 생성
-  let todoArr = [];
-
   const onSubmitHandler = (e) => {
     e.preventDefault();
     let req = {
@@ -38,7 +35,8 @@ const Form = () => {
       text,
       deadLine,
     };
-
+    // 로컬스토리지에 저장 할 배열 생성
+    let todoArr = [];
     // 로컬스토리지에 추가
     todoArr = JSON.parse(localStorage.getItem("allTodos")) || [];
     todoArr.push(req);
@@ -67,7 +65,7 @@ const Form = () => {
           localStorage.setItem("allTodos", allTodos);
         }
 
-        // 일반 로직
+        // API delete
         dispatch(deleteTodos(checkedItems));
         setCheckedItems([]);
       } else {

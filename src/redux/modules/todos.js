@@ -14,6 +14,20 @@ export const fetchTodos = createAsyncThunk(
   }
 );
 
+export const getTodos = createAsyncThunk(
+  "todos/getTodos",
+  async (payload, thunkAPI) => {
+    try {
+      const { data } = await axios.get(
+        process.env.REACT_APP_HOST + `/todos/${payload}`
+      );
+      return thunkAPI.fulfillWithValue(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const createTodos = createAsyncThunk(
   "todos/createTodos",
   async (payload, thunkAPI) => {
@@ -65,6 +79,7 @@ export const todos = createSlice({
   name: "todos",
   initialState: {
     todos: [],
+    detail: {},
     isLoading: false,
     error: null,
   },
@@ -78,6 +93,17 @@ export const todos = createSlice({
       state.todos = action.payload;
     },
     [fetchTodos.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    [getTodos.pending]: (state) => {
+      state.isLoading = true;
+    },
+    [getTodos.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.detail = action.payload;
+    },
+    [getTodos.rejected]: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
     },
