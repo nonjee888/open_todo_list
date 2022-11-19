@@ -11,7 +11,6 @@ const Form = () => {
   const [deadLine, setDeadLine] = useState("");
   const [checkedItems, setCheckedItems] = useState([]);
   const [query, setQuery] = useState(localStorage.getItem("search"));
-  const [todos, setTodos] = useState([]);
   const dispatch = useDispatch();
 
   // 오늘 날짜
@@ -111,8 +110,6 @@ const Form = () => {
         checkedItems={checkedItems}
         setCheckedItems={setCheckedItems}
         query={query}
-        todos={todos}
-        setTodos={setTodos}
       />
     </>
   );

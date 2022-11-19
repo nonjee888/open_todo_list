@@ -76,10 +76,7 @@ const List = (props) => {
   }
 
   useEffect(() => {
-    dispatch(fetchTodos()).then((res) => {
-      if (res.error.message === "Rejected") {
-      }
-    });
+    dispatch(fetchTodos());
   }, []);
 
   if (error) {
