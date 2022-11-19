@@ -32,7 +32,7 @@ create-react-app</br>
 
 yarn start</br>
 json-server db.json --routes routes.json --port 3001</br>
-환경변수 설정: REACT_APP_HOST = http://localhost:3001</br>
+환경변수 설정</br>
 
 ## 기능 & 동작 원리 </br>
 
