@@ -15,7 +15,7 @@ const List = (props) => {
   const indexOfLastTodo = currentPage * todosPerPage;
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
 
-  // 키워드 search시 페이지네이션 된 투두를 필터
+  // 키워드 search시 전체 투두를 필터
   const filteredTodos =
     todos &&
     todos.filter((todo) => {
@@ -24,8 +24,13 @@ const List = (props) => {
       return todoo.toLowerCase().includes(query && query.toLowerCase());
     });
 
+  // 날짜별 오름차순 정렬
+  const sortedTodos = filteredTodos.sort(
+    (a, b) => new Date(a.deadLine) - new Date(b.deadLine)
+  );
+
   // 각 페이지에서 보여질 투두 배열
-  const currentTodos = filteredTodos?.slice(indexOfFirstTodo, indexOfLastTodo);
+  const currentTodos = sortedTodos?.slice(indexOfFirstTodo, indexOfLastTodo);
 
   // 페이지 나누기
   const pageNumber = [];
@@ -42,7 +47,7 @@ const List = (props) => {
   const todosFromLocalStorage = localStorage.getItem("allTodos");
   const localTodos = JSON.parse(todosFromLocalStorage);
 
-  // 키워드 search시 페이지네이션 된 로컬스토리지 투두 필터
+  // 키워드 search시 로컬스토리지 전체 투두 필터
   const filteredLocalTodos =
     localTodos &&
     localTodos.filter((todo) => {
@@ -51,8 +56,15 @@ const List = (props) => {
       return todoo.toLowerCase().includes(query.toLowerCase());
     });
 
+  // 로컬스토리지 투두 배열 오름차순으로 정렬
+  const sortedLocalTodos =
+    filteredLocalTodos &&
+    filteredLocalTodos.sort(
+      (a, b) => new Date(a.deadLine) - new Date(b.deadLine)
+    );
+
   // 각 페이지에서 보여질 로컬스토리지의 투두 배열
-  const currentLocalTodos = filteredLocalTodos?.slice(
+  const currentLocalTodos = sortedLocalTodos?.slice(
     indexOfFirstTodo,
     indexOfLastTodo
   );
@@ -64,7 +76,10 @@ const List = (props) => {
   }
 
   useEffect(() => {
-    dispatch(fetchTodos());
+    dispatch(fetchTodos()).then((res) => {
+      if (res.error.message === "Rejected") {
+      }
+    });
   }, []);
 
   if (error) {
