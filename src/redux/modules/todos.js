@@ -5,7 +5,7 @@ export const fetchTodos = createAsyncThunk(
   "todos/fetchTodos",
   async (_, thunkAPI) => {
     try {
-      const data = await axios.get(process.env.REACT_APP_HOST + "/todos");
+      const data = await axios.get(process.env.REACT_APP_HOST + "/api/todos");
 
       return thunkAPI.fulfillWithValue(data.data);
     } catch (error) {
@@ -19,7 +19,7 @@ export const getTodos = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       const { data } = await axios.get(
-        process.env.REACT_APP_HOST + `/todos/${payload}`
+        process.env.REACT_APP_HOST + `/api/todos/${payload}`
       );
       return thunkAPI.fulfillWithValue(data);
     } catch (error) {
@@ -33,7 +33,7 @@ export const createTodos = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       const data = await axios.post(
-        process.env.REACT_APP_HOST + "/todos",
+        process.env.REACT_APP_HOST + "/api/todos",
         payload
       );
       return thunkAPI.fulfillWithValue(data);
@@ -48,7 +48,7 @@ export const updateTodos = createAsyncThunk(
   async (payload, thunkAPI) => {
     try {
       const data = await axios.put(
-        process.env.REACT_APP_HOST + `/todos/${payload}`,
+        process.env.REACT_APP_HOST + `/api/todos/${payload}`,
         payload
       );
       return thunkAPI.fulfillWithValue(data);
@@ -63,7 +63,7 @@ export const deleteTodos = createAsyncThunk(
   async (payload) => {
     for (let i = 0; i < payload.length; i++) {
       await axios
-        .delete(process.env.REACT_APP_HOST + `/todos/${payload[i]}`)
+        .delete(process.env.REACT_APP_HOST + `/api/todos/${payload[i]}`)
 
         .then((res) => {
           console.log(res);

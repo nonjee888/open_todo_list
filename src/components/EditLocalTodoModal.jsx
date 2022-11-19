@@ -27,7 +27,7 @@ const EditLocalTodoModal = (props) => {
     };
     try {
       const data = await axios.put(
-        process.env.REACT_APP_HOST + `/todos/${initialState.id}`,
+        process.env.REACT_APP_HOST + `/api/todos/${initialState.id}`,
         req
       );
       if (data.statusText === "OK") {
