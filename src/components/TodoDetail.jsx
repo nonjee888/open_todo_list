@@ -52,7 +52,7 @@ const TodoDetail = () => {
     });
 
   useEffect(() => {
-    if (localTodosDetail[0]?.deadLine !== undefined) {
+    if (localTodosDetail && localTodosDetail[0]?.deadLine !== undefined) {
       const todaysDate = new Date().toISOString().split("T")[0];
       const today = Date.parse(todaysDate);
       const selectedDate = Date.parse(localTodosDetail[0]?.deadLine);
@@ -66,7 +66,7 @@ const TodoDetail = () => {
         }
       }, 500);
     }
-  }, [localTodosDetail[0]?.deadLine]);
+  }, [localTodosDetail && localTodosDetail[0]?.deadLine]);
 
   if (error) {
     return (

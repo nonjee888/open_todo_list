@@ -48,11 +48,11 @@ const Form = () => {
 
         // 로컬스토리지에서 삭제
         for (let i = 0; i < checkedItems.length; i++) {
-          const index = localTodos.findIndex(
-            (todo) => todo.id === checkedItems[i]
-          );
+          const index =
+            localTodos &&
+            localTodos.findIndex((todo) => todo.id === checkedItems[i]);
           if (index > -1) {
-            localTodos.splice(index, 1);
+            localTodos && localTodos.splice(index, 1);
           }
 
           // 삭제된 배열을 다시 로컬스토리지에 넣어줌
