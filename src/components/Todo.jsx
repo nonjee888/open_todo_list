@@ -8,6 +8,7 @@ const Todo = ({ props, todo }) => {
     if (checked) {
       setCheckedItems((prev) => [...prev, id]);
     } else {
+      // checkedItems에서 선택 해제시 선택한 todo의 id와 다른 요소들만 checkeItems에 담기
       setCheckedItems(checkedItems.filter((el) => el !== id));
     }
   };

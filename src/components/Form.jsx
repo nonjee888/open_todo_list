@@ -30,6 +30,7 @@ const Form = () => {
     // 로컬스토리지에 추가
     todoArr = JSON.parse(localStorage.getItem("allTodos")) || [];
     todoArr.push(req);
+
     localStorage.setItem("allTodos", JSON.stringify(todoArr));
 
     // API Post
