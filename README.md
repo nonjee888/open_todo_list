@@ -75,11 +75,10 @@ json-server db.json --routes routes.json --port 3001</br>
 - 내용과 날짜 선택 가능
 - 현재 날짜 부터 선택 가능
 - API가 offline일 경우엔 로컬스토리지에 저장
-          a. 로컬스토리지에 저장 할 배열 todoArr를 선언하고 
-          b. todoArr를 localStorage에서 가져온 값을 파싱한 배열
-             또는 빈배열로 할당
-          c. todoArr에 데이터인 req를 push해 배열 마지막에 추가
-          d. 데이터가 추가된 todoArr를 localStorage에 저장
+- 로컬스토리지에 저장 할 배열 todoArr를 선언하고 
+- todoArr를 localStorage에서 가져온 값을 파싱한 배열 또는 빈배열로 할당
+- todoArr에 데이터인 req를 push해 배열 마지막에 추가
+- 데이터가 추가된 todoArr를 localStorage에 저장
 - API Post요청 dispatch
 - 데이터 전송 후 input은 초기화
 </br>
@@ -143,8 +142,8 @@ json-server db.json --routes routes.json --port 3001</br>
 - 상세조회에서 가져온 내용과 기한을 useState의 initialState로 설정해 input에 반영
 - 수정에 성공하면 path “/”로 navigate
 - 로컬스토리지로 작동하는 경우 
-  a. onUpdateHandler의 catch에서 findIndex() 이용
-  b. localStorage 배열의 todo id와 상세조회페이지에서 가져온 데이터의 id를 비교 ⇒ 같은 id의 index 번호를 찾아 splice()로 교체, 교체된 배열을 다시 로컬스토리지로 저장
+- onUpdateHandler의 catch에서 findIndex() 이용
+- localStorage 배열의 todo id와 상세조회페이지에서 가져온 데이터의 id를 비교 ⇒ 같은 id의 index 번호를 찾아 splice()로 교체, 교체된 배열을 다시 로컬스토리지로 저장
 
 </br>
   
