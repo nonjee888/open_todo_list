@@ -38,7 +38,7 @@ json-server db.json --routes routes.json --port 3001</br>
 
 ### 1. 신규 todo 입력해 추가
 
-  #### Form.jsx 
+#### Form.jsx 
   
   ```javaScript
   
@@ -69,7 +69,7 @@ json-server db.json --routes routes.json --port 3001</br>
     setDeadLine("");
   };
   ```
-* 동작 원리
+#### 동작 원리
 
 - 상단에서 신규 To-Do 입력하여 추가
 - 내용과 날짜 선택 가능
@@ -84,9 +84,9 @@ json-server db.json --routes routes.json --port 3001</br>
 - 데이터 전송 후 input은 초기화
 </br>
 
-  ## 2. 기한 3일 이내 남은 경우 경고 
+## 2. 기한 3일 이내 남은 경우 경고 
   
-  #### TodoDetail.jsx
+#### TodoDetail.jsx
   ```javaScript
   
   // todo 상세페이지 조회 API 요청
@@ -115,7 +115,7 @@ json-server db.json --routes routes.json --port 3001</br>
   }, [detail.deadLine]);
   // data가 처음에 undefined 였다가 들어옴. 의존성 배열에 detail.deadLine 추가
   ```
-* 동작 원리
+#### 동작 원리
 
 - To Do 상세페이지 조회 API 요청
 - API응답에 To Do 기한이 담긴 데이터가 있으면
@@ -123,10 +123,10 @@ json-server db.json --routes routes.json --port 3001</br>
 - path: “/id” 로 이동 시, 몇 일 남았는지 alert
   </br>
   
-  ## 3. Row 단위로 수정 
+## 3. Row 단위로 수정 
   
-  #### EditTodoModal.jsx
-  ```javaScript
+#### EditTodoModal.jsx
+```javaScript
   // todo 상세조회에서 가져온 데이터를 initialState로 input에 띄워주기
   const initialState = {
     id: detail.id,
@@ -136,8 +136,8 @@ json-server db.json --routes routes.json --port 3001</br>
   const [text, setText] = useState(initialState.text);
   const [deadLine, setDeadLine] = useState(initialState.deadLine);
   
-  ```
-* 동작 원리
+```
+#### 동작 원리
 
 - Todo 상세조회페이지에서 수정 버튼 누름
 - 상세조회에서 가져온 내용과 기한을 useState의 initialState로 설정해 input에 반영
@@ -147,11 +147,14 @@ json-server db.json --routes routes.json --port 3001</br>
   b. localStorage 배열의 todo id와 상세조회페이지에서 가져온 데이터의 id를 비교 ⇒ 같은 id의 index 번호를 찾아 splice()로 교체
   c. 교체된 배열을 다시 로컬스토리지로 저장
 
-  </br>
+</br>
   
-  ## 4. Multiple Row 선택 삭제
-  #### Form.jsx
-  ```javaScript
+## 4. Multiple Row 선택 삭제
+  
+#### Form.jsx
+  
+```javaScript
+  
    const onDeleteHandler = () => {
    // Todo.jsx에서 받아온 checkedItems이 0보다 클때 alert 확인 버튼 누를시,
     if (checkedItems.length > 0) {
@@ -186,9 +189,11 @@ json-server db.json --routes routes.json --port 3001</br>
       }
     }
   };
-  ```
-  #### todos.js (Redux module)
-  ```javaScript
+```
+  
+#### todos.js (Redux module)
+  
+```javaScript
   
  // 미들웨어에서 for문 이용해 multiple삭제 구현
   export const deleteTodos = createAsyncThunk(
@@ -242,8 +247,9 @@ json-server db.json --routes routes.json --port 3001</br>
     },
 }    
 //...생략
-  ```
-* 동작원리
+```
+  
+#### 동작원리
 
 - input type checkbox 이용 todo 다중 선택 ⇒ 삭제
 - input의 id = todo.id로 지정
@@ -258,11 +264,14 @@ json-server db.json --routes routes.json --port 3001</br>
 - 반복문을 이용해 배열로 들어온 payload가 순서대로 axios 요청으로 전송 될 수 있도록 함
 - extraReducer에서 todo.id와 action의 payload에 담긴 id 배열을 비교하여 splice()로 삭제되도록 반복문 실행
 
-  </br>
+</br>
   
-  ## 5. List size - 5로 페이지네이션 
-  #### List.jsx
-  ```javaScript
+## 5. List size - 5로 페이지네이션 
+  
+#### List.jsx
+  
+```javaScript
+  
   //todos = 전체 todo 데이터
   
   // 키워드 search시 전체 투두를 필터
@@ -313,8 +322,8 @@ json-server db.json --routes routes.json --port 3001</br>
 };
   
   
-  ```
-* 동작 원리 
+```
+#### 동작 원리 
 
 - 전체 todo 배열 = todos
 - 검색 키워드 = query
@@ -325,9 +334,9 @@ json-server db.json --routes routes.json --port 3001</br>
 - map이용해 currentTodos, pageNumber를 화면에 표시
   </br>
   
-  ## 6. 검색필터, 검색어 브라우저 닫아도 남도록하기
-  #### Form.jsx
-  ```javaScript
+## 6. 검색필터, 검색어 브라우저 닫아도 남도록하기
+#### Form.jsx
+```javaScript
   
   // 검색어 input value에 initialState를 localStorage에 저장한 데이터로 지정
    const [query, setQuery] = useState(localStorage.getItem("search"));
@@ -337,11 +346,11 @@ json-server db.json --routes routes.json --port 3001</br>
     localStorage.setItem("search", e.target.value);
   };
   
-  ```
+```
   
-  #### List.jsx
+#### List.jsx
   
-  ```javaScript
+```javaScript
   
 // 키워드 search시 전체 투두를 필터, 검색어 없으면 전체 배열 보여줌
   const filteredTodos =
@@ -352,8 +361,8 @@ json-server db.json --routes routes.json --port 3001</br>
       return todoo.toLowerCase().includes(query && query.toLowerCase());
     });
     
-  ```
-* 동작 원리 
+```
+#### 동작 원리 
 
 - input type=search, value=query 로 설정
 - handleSearch에서 query에 검색 키워드 저장
@@ -364,14 +373,14 @@ json-server db.json --routes routes.json --port 3001</br>
   
  </br>
  
- ## 7. API가 offline인 경우 로컬스토리지로 작동될 수 있게 처리
- ### fetch, get 
+## 7. API가 offline인 경우 로컬스토리지로 작동될 수 있게 처리
+### fetch, get 
  
- 미들웨어에서 catch로 AxiosError가 잡히면 extraReducer에서 state.error에 저장하여 useSelector를 이용해 error일때 로컬스토리지에서 가져온 데이터를 보여주도록 구현했습니다.
+미들웨어에서 catch로 AxiosError가 잡히면 extraReducer에서 state.error에 저장하여 useSelector를 이용해 error일때 로컬스토리지에서 가져온 데이터를 보여주도록 구현했습니다.
  
- #### todos.js
+#### todos.js
  
- ```javaScript
+```javaScript
  
  export const todos = createSlice({
   name: "todos",
@@ -399,9 +408,9 @@ json-server db.json --routes routes.json --port 3001</br>
 ```
  
  
- #### List.jsx
+#### List.jsx
  
- ```javaScript
+```javaScript
  
  if (error) {
     return (
@@ -428,17 +437,17 @@ json-server db.json --routes routes.json --port 3001</br>
     );
   }
   
- ```
+```
  
- ### delete
- 삭제 버튼 eventHandler안에서 localStorage데이터 수정, 삭제하는 로직 구현 (Multiple Row 삭제 소스코드 참고)
+### delete
+삭제 버튼 eventHandler안에서 localStorage데이터 수정, 삭제하는 로직 구현 (Multiple Row 삭제 소스코드 참고)
  
- ### put
- TodoDetail.jsx(todo 상세페이지)에서 error 일 때 localStorage에 저장된 데이터들을 보여주었습니다. 수정버튼 눌렀을 때 뜨는 모달창의 input에 떠야할 값은 API통신을 하는 DB와 LocalStorage가 서로 달라서 로컬스토리지 데이터 수정용 모달을 따로 만들어주어 API offline일 때는 다른 모달을 보여주도록 구현했습니다.
+### put
+TodoDetail.jsx(todo 상세페이지)에서 error 일 때 localStorage에 저장된 데이터들을 보여주었습니다. 수정버튼 눌렀을 때 뜨는 모달창의 input에 떠야할 값은 API통신을 하는 DB와 LocalStorage가 서로 달라서 로컬스토리지 데이터 수정용 모달을 따로 만들어주어 API offline일 때는 다른 모달을 보여주도록 구현했습니다.
  
- #### EditLocalTodoModal.jsx
+#### EditLocalTodoModal.jsx
  
- ```javaScript
+```javaScript
  
  const onUpdateHandler = async (e) => {
     e.preventDefault();
@@ -477,9 +486,9 @@ json-server db.json --routes routes.json --port 3001</br>
     }
   };
   
- ```
- </br>
+```
+</br>
  
- ## [회고 : 잘 안된것, 새롭게 알게된 것들 톺아보기](https://nonjee888.tistory.com/entry/%EC%9E%98-%EC%95%88-%EB%90%98%EC%97%88%EB%8D%98%EA%B2%83-%ED%86%BA%EC%95%84%EB%B3%B4%EA%B8%B0)
+## [회고 : 잘 안된것, 새롭게 알게된 것들 톺아보기](https://nonjee888.tistory.com/entry/%EC%9E%98-%EC%95%88-%EB%90%98%EC%97%88%EB%8D%98%EA%B2%83-%ED%86%BA%EC%95%84%EB%B3%B4%EA%B8%B0)
  
   
