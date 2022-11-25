@@ -69,6 +69,19 @@ json-server db.json --routes routes.json --port 3001</br>
     setDeadLine("");
   };
   ```
+* 동작 원리
+
+- 상단에서 신규 To-Do 입력하여 추가
+- 내용과 날짜 선택 가능
+- 현재 날짜 부터 선택 가능
+- API가 offline일 경우엔 로컬스토리지에 저장
+          a. 로컬스토리지에 저장 할 배열 todoArr를 선언하고 
+          b. todoArr를 localStorage에서 가져온 값을 파싱한 배열
+             또는 빈배열로 할당
+          c. todoArr에 데이터인 req를 push해 배열 마지막에 추가
+          d. 데이터가 추가된 todoArr를 localStorage에 저장
+- API Post요청 dispatch
+- 데이터 전송 후 input은 초기화
 </br>
 
   ## 2. 기한 3일 이내 남은 경우 경고 
@@ -102,6 +115,12 @@ json-server db.json --routes routes.json --port 3001</br>
   }, [detail.deadLine]);
   // data가 처음에 undefined 였다가 들어옴. 의존성 배열에 detail.deadLine 추가
   ```
+* 동작 원리
+
+- To Do 상세페이지 조회 API 요청
+- API응답에 To Do 기한이 담긴 데이터가 있으면
+- new Date()이용해 오늘과 선택된 날의 값을 millisecond로 parse ⇒  남은 일 수 구함
+- path: “/id” 로 이동 시, 몇 일 남았는지 alert
   </br>
   
   ## 3. Row 단위로 수정 
@@ -118,7 +137,16 @@ json-server db.json --routes routes.json --port 3001</br>
   const [deadLine, setDeadLine] = useState(initialState.deadLine);
   
   ```
-  
+* 동작 원리
+
+- Todo 상세조회페이지에서 수정 버튼 누름
+- 상세조회에서 가져온 내용과 기한을 useState의 initialState로 설정해 input에 반영
+- 수정에 성공하면 path “/”로 navigate
+- 로컬스토리지로 작동하는 경우 
+  a. onUpdateHandler의 catch에서 findIndex() 이용
+  b. localStorage 배열의 todo id와 상세조회페이지에서 가져온 데이터의 id를 비교 ⇒ 같은 id의 index 번호를 찾아 splice()로 교체
+  c. 교체된 배열을 다시 로컬스토리지로 저장
+
   </br>
   
   ## 4. Multiple Row 선택 삭제
@@ -215,7 +243,21 @@ json-server db.json --routes routes.json --port 3001</br>
 }    
 //...생략
   ```
-  
+* 동작원리
+
+- input type checkbox 이용 todo 다중 선택 ⇒ 삭제
+- input의 id = todo.id로 지정
+- checkedItems라는 state에 선택한 todo.id를 배열로 저장
+- includes()로 checkedItems에 todo.id가 있으면 input checked로 상태 변경
+- check 취소시 선택 취소한 id와 다른 요소들만 checkedItems에 저장 
+- checkedItems가 있을때 삭제 재확인 후 로컬스토리지의 todo들을 리스트로 변환해 for문 이용해 순차적으로 splice()를 이용해 삭제함
+- 삭제한 배열 다시 로컬스토리지에 저장
+
+* API DELETE
+
+- 반복문을 이용해 배열로 들어온 payload가 순서대로 axios 요청으로 전송 될 수 있도록 함
+- extraReducer에서 todo.id와 action의 payload에 담긴 id 배열을 비교하여 splice()로 삭제되도록 반복문 실행
+
   </br>
   
   ## 5. List size - 5로 페이지네이션 
@@ -272,7 +314,15 @@ json-server db.json --routes routes.json --port 3001</br>
   
   
   ```
-  
+* 동작 원리 
+
+- 전체 todo 배열 = todos
+- 검색 키워드 = query
+- 키워드가 들어간 데이터를 전체 배열에서 filter하는 배열을 filteredTodos에 저장
+- filteredTodos 오름차순 정렬
+- 페이지를 todos의 길이와 한 화면에 보여질 todo의 갯수(5)로 나누어 pageNumber에 페이지 수(i)를 배열로 저장
+- 각 페이지에 보여질 todo 배열 = currentTodos에 저장 
+- map이용해 currentTodos, pageNumber를 화면에 표시
   </br>
   
   ## 6. 검색필터, 검색어 브라우저 닫아도 남도록하기
@@ -303,6 +353,14 @@ json-server db.json --routes routes.json --port 3001</br>
     });
     
   ```
+* 동작 원리 
+
+- input type=search, value=query 로 설정
+- handleSearch에서 query에 검색 키워드 저장
+- localStorage “search”라는 이름으로 검색 키워드인 
+- event target value 저장
+- query의 initialState는 localStorage에서 가져온 “search”의 value ⇒ 브라우저 닫았다 켜도 키워드 유지
+
   
  </br>
  
