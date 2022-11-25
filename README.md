@@ -144,8 +144,7 @@ json-server db.json --routes routes.json --port 3001</br>
 - 수정에 성공하면 path “/”로 navigate
 - 로컬스토리지로 작동하는 경우 
   a. onUpdateHandler의 catch에서 findIndex() 이용
-  b. localStorage 배열의 todo id와 상세조회페이지에서 가져온 데이터의 id를 비교 ⇒ 같은 id의 index 번호를 찾아 splice()로 교체
-  c. 교체된 배열을 다시 로컬스토리지로 저장
+  b. localStorage 배열의 todo id와 상세조회페이지에서 가져온 데이터의 id를 비교 ⇒ 같은 id의 index 번호를 찾아 splice()로 교체, 교체된 배열을 다시 로컬스토리지로 저장
 
 </br>
   
@@ -259,7 +258,7 @@ json-server db.json --routes routes.json --port 3001</br>
 - checkedItems가 있을때 삭제 재확인 후 로컬스토리지의 todo들을 리스트로 변환해 for문 이용해 순차적으로 splice()를 이용해 삭제함
 - 삭제한 배열 다시 로컬스토리지에 저장
 
-* API DELETE
+#### API DELETE
 
 - 반복문을 이용해 배열로 들어온 payload가 순서대로 axios 요청으로 전송 될 수 있도록 함
 - extraReducer에서 todo.id와 action의 payload에 담긴 id 배열을 비교하여 splice()로 삭제되도록 반복문 실행
