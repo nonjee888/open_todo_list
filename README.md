@@ -241,7 +241,6 @@ json-server db.json --routes routes.json --port 3001
 
   // todo배열의 id와 action으로 들어온 id들과 비교해 같은 것 찾아 삭제
   extraReducers:{
-
     [deleteTodos.pending]: (state) => {
       state.isLoading = true;
     },
@@ -255,7 +254,6 @@ json-server db.json --routes routes.json --port 3001
         state.todos.splice(index, 1);
       }
     },
-
     [deleteTodos.rejected]: (state, action) => {
       state.isLoading = false;
       state.error = action.payload;
