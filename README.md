@@ -165,28 +165,23 @@ json-server db.json --routes routes.json --port 3001
   const onDeleteHandler = () => {
    // Todo.jsx에서 받아온 checkedItems이 0보다 클때 alert 확인 버튼 누를시,
     if (checkedItems.length > 0) {
-      if (window.confirm("삭제할까요?") === true) {
-      
+      if (window.confirm("삭제할까요?") === true) {    
         // 로컬스토리지의 투두들을 리스트로 변환
         const todosFromLocalStorage = localStorage.getItem("allTodos");
         const localTodos = JSON.parse(todosFromLocalStorage);
-
         // 로컬스토리지에서 todo.id와 checkedItems의 id가 일치하는 것 for문 돌려 찾아서 삭제
         for (let i = 0; i < checkedItems.length; i++) {
           const index = localTodos.findIndex(
             (todo) => todo.id === checkedItems[i]
           );
-
           // 일치하는 데이터가 있으면 배열화한 데이터에서 삭제해주기
           if (index > -1) {
             localTodos.splice(index, 1);
           }
-
           // 삭제된 배열을 다시 로컬스토리지에 넣어줌
           let allTodos = JSON.stringify(localTodos);
           localStorage.setItem("allTodos", allTodos);
         }
-
         // API Delete
         dispatch(deleteTodos(checkedItems));
         setCheckedItems([]);
@@ -210,7 +205,6 @@ json-server db.json --routes routes.json --port 3001
     for (let i = 0; i < payload.length; i++) {
       await axios
         .delete(process.env.REACT_APP_HOST + `/api/todos/${payload[i]}`)
-
         .then((res) => {
           console.log(res);
         })
@@ -220,7 +214,6 @@ json-server db.json --routes routes.json --port 3001
       }
     }
   );
-
   // ...생략
   export const todos = createSlice({
     name: "todos",
@@ -236,9 +229,7 @@ json-server db.json --routes routes.json --port 3001
       state.detail = {};
     },
   },
-
   // ...생략
-
   // todo배열의 id와 action으로 들어온 id들과 비교해 같은 것 찾아 삭제
   extraReducers:{
     [deleteTodos.pending]: (state) => {
@@ -287,7 +278,6 @@ json-server db.json --routes routes.json --port 3001
 ```javaScript
   
   //todos = 전체 todo 데이터
-  
   // 키워드 search시 전체 투두를 필터
   const filteredTodos =
     todos &&
@@ -296,24 +286,19 @@ json-server db.json --routes routes.json --port 3001
       const todoo = todo.text || "";
       return todoo.toLowerCase().includes(query && query.toLowerCase());
     });
-
   // 날짜별 오름차순 정렬
   const sortedTodos = filteredTodos.sort(
     (a, b) => new Date(a.deadLine) - new Date(b.deadLine)
   );
-
   // 각 페이지에서 보여질 투두 배열
   const currentTodos = sortedTodos?.slice(indexOfFirstTodo, indexOfLastTodo);
-
   // 페이지 나누기
   const pageNumber = [];
   const totalTodos = todos.length;
   for (let i = 1; i <= Math.ceil(totalTodos / todosPerPage); i++) {
     pageNumber.push(i);
   }
-
   //...생략
-
   return (
     <>
       {currentTodos.map((todo, idx) => {
@@ -353,7 +338,6 @@ json-server db.json --routes routes.json --port 3001
 
   // 검색어 input value에 initialState를 localStorage에 저장한 데이터로 지정
   const [query, setQuery] = useState(localStorage.getItem("search"));
-
   const handleSearch = (e) => {
     setQuery(e.target.value);
     localStorage.setItem("search", e.target.value);
@@ -449,21 +433,15 @@ TodoDetail.jsx(todo 상세페이지)에서 error 일 때 localStorage에 저장�
       if (data.statusText === "OK") {
         navigate("/");
       }
-
       // API offline 일 때,
-
     } catch {
-
       // 로컬스토리지의 투두들을 리스트로 변환
       const todosFromLocalStorage = localStorage.getItem("allTodos");
       const localTodos = JSON.parse(todosFromLocalStorage);
-
       // 수정할 투두 index 찾기
       const index = localTodos.findIndex((todo) => todo.id === initialState.id);
-
       // 수정할 투두로 배열 원소 교체
       localTodos.splice(index, 1, req);
-
       // 교체된 배열 다시 로컬스토리지 저장
       let allTodos = JSON.stringify(localTodos);
       localStorage.setItem("allTodos", allTodos);
