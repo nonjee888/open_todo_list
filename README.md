@@ -50,7 +50,6 @@ json-server db.json --routes routes.json --port 3001
 
   // 오늘 날짜
   const todaysDate = new Date().toISOString().split("T")[0];
-
   const onSubmitHandler = (e) => {
     e.preventDefault();
     let req = {
@@ -58,16 +57,12 @@ json-server db.json --routes routes.json --port 3001
       text,
       deadLine,
     };
-
     // 로컬스토리지에 저장 할 배열 생성
     let todoArr = [];
-
     // 로컬스토리지에 추가
     todoArr = JSON.parse(localStorage.getItem("allTodos")) || [];
     todoArr.push(req);
-
     localStorage.setItem("allTodos", JSON.stringify(todoArr));
-
     // API Post
     dispatch(createTodos(req));
     setText("");
@@ -99,13 +94,11 @@ json-server db.json --routes routes.json --port 3001
   // todo 상세페이지 조회 API 요청
   useEffect(() => {
     dispatch(getTodos(id));
-
     // 상세페이지에서 벗어날 때 리듀서 이용해서 데이터 초기화 해 줌
     return () => {
       dispatch(todos.actions.clearDetail());
     };
   }, []);
-
   // 데이터가 성공적으로 들어오고 deadLine(todo의 기한)이 있을 때, 3일 전 부터 몇일 남았는지 alert 띄우기
   useEffect(() => {
     if (isLoading) return;
