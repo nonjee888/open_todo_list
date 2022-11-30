@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchTodos } from "../redux/modules/todos";
 import Pagination from "./Pagenation";
 
-const List = (props) => {
+const TodoList = (props) => {
   const { todos, error } = useSelector((state) => state.todos);
   const query = props.query || "";
   const dispatch = useDispatch();
@@ -79,53 +79,53 @@ const List = (props) => {
     dispatch(fetchTodos());
   }, []);
 
-  if (error) {
-    return (
-      <div>
-        {currentLocalTodos &&
-          currentLocalTodos.map((todo) => {
-            return (
-              <Todo props={props} todo={todo} key={todo.id} error={error} />
-            );
-          })}
-        <StPageNumberUl>
-          {localPageNumber.map((pageNum) => {
-            return (
-              <Pagination
-                pageNum={pageNum}
-                key={pageNum}
-                paginate={paginate}
-                selected={currentPage}
-              />
-            );
-          })}
-        </StPageNumberUl>
-      </div>
-    );
-  }
-
   return (
     <>
-      {currentTodos.map((todo, idx) => {
-        return <Todo props={props} todo={todo} key={todo.id} idx={idx} />;
-      })}
-      <StPageNumberUl>
-        {pageNumber.map((pageNum) => {
-          return (
-            <Pagination
-              pageNum={pageNum}
-              key={pageNum}
-              paginate={paginate}
-              selected={currentPage}
-            />
-          );
-        })}
-      </StPageNumberUl>
+      {(error && (
+        <>
+          {currentLocalTodos &&
+            currentLocalTodos.map((todo) => {
+              return (
+                <Todo props={props} todo={todo} key={todo.id} error={error} />
+              );
+            })}
+          <StPageNumberUl>
+            {pageNumber.map((pageNum) => {
+              return (
+                <Pagination
+                  pageNum={pageNum}
+                  key={pageNum}
+                  paginate={paginate}
+                  selected={currentPage}
+                />
+              );
+            })}
+          </StPageNumberUl>
+        </>
+      )) || (
+        <>
+          {currentTodos.map((todo, idx) => {
+            return <Todo props={props} todo={todo} key={todo.id} idx={idx} />;
+          })}
+          <StPageNumberUl>
+            {pageNumber.map((pageNum) => {
+              return (
+                <Pagination
+                  pageNum={pageNum}
+                  key={pageNum}
+                  paginate={paginate}
+                  selected={currentPage}
+                />
+              );
+            })}
+          </StPageNumberUl>
+        </>
+      )}
     </>
   );
 };
 
-export default List;
+export default TodoList;
 
 const StPageNumberUl = styled.ul`
   display: flex;

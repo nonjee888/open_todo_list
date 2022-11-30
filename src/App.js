@@ -1,16 +1,15 @@
-import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import Detail from "./pages/Detail";
-import Main from "./pages/Main";
+import DetailPage from "./pages/DetailPage";
+import MainPage from "./pages/MainPage";
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path=":id" element={<Detail />} />
+          <Route path="/" element={<MainPage />} />
+          <Route path=":id" element={<DetailPage />} />
         </Routes>
       </BrowserRouter>
     </div>

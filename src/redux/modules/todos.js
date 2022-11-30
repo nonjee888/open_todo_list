@@ -36,6 +36,7 @@ export const createTodos = createAsyncThunk(
         process.env.REACT_APP_HOST + "/api/todos",
         payload
       );
+
       return thunkAPI.fulfillWithValue(data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);

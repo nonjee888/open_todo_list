@@ -1,4 +1,4 @@
-import List from "./List";
+import TodoList from "./TodoList";
 import styled from "styled-components";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -107,7 +107,7 @@ const Form = () => {
         </StElementsDiv>
       </StForm>
 
-      <List
+      <TodoList
         checkedItems={checkedItems}
         setCheckedItems={setCheckedItems}
         query={query}

@@ -5,11 +5,13 @@ import styled from "styled-components";
 
 const EditTodoModal = (props) => {
   const navigate = useNavigate();
-  const { detail, closeModal } = props;
+  const { detail, closeModal, error, localTodoDetail } = props;
+  console.log(error);
+
   const initialState = {
-    id: detail.id,
-    text: detail.text,
-    deadLine: detail.deadLine,
+    id: error === null ? detail.id : localTodoDetail[0].id,
+    text: error === null ? detail.text : localTodoDetail[0].text,
+    deadLine: error === null ? detail.deadLine : localTodoDetail[0].deadLine,
   };
   const [text, setText] = useState(initialState.text);
   const [deadLine, setDeadLine] = useState(initialState.deadLine);

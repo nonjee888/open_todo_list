@@ -1,15 +1,13 @@
-import Footer from "./Footer";
-import Form from "./Form";
-import Header from "./Header";
+import styled from "styled-components";
 
-const Layout = () => {
-  return (
-    <>
-      <Header />
-      <Form />
-      <Footer />
-    </>
-  );
+const Layout = (props) => {
+  return <StyledLayout>{props.children}</StyledLayout>;
 };
 
 export default Layout;
+
+const StyledLayout = styled.div`
+  max-width: 900px;
+  height: 100%;
+  margin: 0 auto;
+`;
