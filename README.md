@@ -450,8 +450,3 @@ TodoDetail.jsx(todo 상세페이지)에서 error 일 때 localStorage에 저장�
 </br>
  
 ## [회고 : 잘 안된것, 새롭게 알게된 것들 톺아보기](https://nonjee888.tistory.com/entry/%EC%9E%98-%EC%95%88-%EB%90%98%EC%97%88%EB%8D%98%EA%B2%83-%ED%86%BA%EC%95%84%EB%B3%B4%EA%B8%B0)
-<<<<<<< HEAD
-
-=======
-
-> > > > > > > 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
