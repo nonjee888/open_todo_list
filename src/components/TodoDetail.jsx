@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import todos, { getTodos } from "../redux/modules/todos";
 import EditTodoModal from "./EditTodoModal";
+import Button from "./Button";
 
 const TodoDetail = () => {
   const { error, detail, isLoading } = useSelector((state) => state?.todos);
@@ -79,7 +80,6 @@ const TodoDetail = () => {
           ) : null}
           {(error && (
             <>
-              {" "}
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <StIdDiv>{localTodosDetail[0].id}</StIdDiv>
                 <StDeadLineDiv>
@@ -97,20 +97,22 @@ const TodoDetail = () => {
               <StTextDiv>{detail.text}</StTextDiv>
             </>
           )}
-          <StEditButton
-            onClick={() => {
-              setModal(true);
-            }}
-          >
-            수정
-          </StEditButton>
-          <StGoBackButton
-            onClick={() => {
-              navigate("/");
-            }}
-          >
-            이전
-          </StGoBackButton>
+          <StyledButtonsDiv>
+            <Button
+              onClick={() => {
+                setModal(true);
+              }}
+            >
+              수정
+            </Button>
+            <Button
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              이전
+            </Button>
+          </StyledButtonsDiv>
         </StWrapperDiv>
       </StDetailDiv>
     </>
@@ -122,10 +124,10 @@ export default TodoDetail;
 const StDetailDiv = styled.div`
   width: 500px;
   height: 300px;
-  margin: 300px auto;
+  margin: 150px auto;
   display: flex;
   border-radius: 10px;
-  background-color: #cee0f1;
+  background-color: #a4ceee;
   box-shadow: 0 2px 5px 1px rgb(64 60 67 / 16%);
 `;
 const StWrapperDiv = styled.div`
@@ -147,19 +149,8 @@ const StDeadLineDiv = styled.div`
   margin-top: 20px;
   font-weight: 600;
 `;
-const StEditButton = styled.button`
-  width: 100px;
-  height: 30px;
-  border: none;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 1px rgb(64 60 67 / 16%);
-  margin: 50px 0 0 100px;
-`;
-const StGoBackButton = styled.button`
-  width: 100px;
-  height: 30px;
-  border: none;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 1px rgb(64 60 67 / 16%);
-  margin-left: 20px;
+const StyledButtonsDiv = styled.div`
+  display: flex;
+  gap: 20px;
+  justify-content: center;
 `;

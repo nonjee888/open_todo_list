@@ -2,16 +2,16 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Input from "./Input";
+import Button from "./Button";
 
 const EditTodoModal = (props) => {
   const navigate = useNavigate();
-  const { detail, closeModal, error, localTodoDetail } = props;
-  console.log(error);
-
+  const { detail, closeModal, error, localTodosDetail } = props;
   const initialState = {
-    id: error === null ? detail.id : localTodoDetail[0].id,
-    text: error === null ? detail.text : localTodoDetail[0].text,
-    deadLine: error === null ? detail.deadLine : localTodoDetail[0].deadLine,
+    id: error === null ? detail.id : localTodosDetail[0].id,
+    text: error === null ? detail.text : localTodosDetail[0].text,
+    deadLine: error === null ? detail.deadLine : localTodosDetail[0].deadLine,
   };
   const [text, setText] = useState(initialState.text);
   const [deadLine, setDeadLine] = useState(initialState.deadLine);
@@ -35,28 +35,35 @@ const EditTodoModal = (props) => {
         navigate("/");
       }
     } catch {
-      alert("다시 시도해주세요!");
-      closeModal(false);
+      // 로컬스토리지의 투두들을 리스트로 변환
+      const todosFromLocalStorage = localStorage.getItem("allTodos");
+      const localTodos = JSON.parse(todosFromLocalStorage);
+      // 수정할 투두 index 찾기
+      const index = localTodos.findIndex((todo) => todo.id === initialState.id);
+      // 수정할 투두로 배열 원소 교체
+      localTodos.splice(index, 1, req);
+      // 교체된 배열 다시 로컬스토리지 저장
+      let allTodos = JSON.stringify(localTodos);
+      localStorage.setItem("allTodos", allTodos);
+      navigate("/");
     }
   };
 
   return (
-    <StEditTodoForm onSubmit={onUpdateHandler}>
-      <StEditBox>
-        <StIdDiv>No.{initialState.id}</StIdDiv>
-        <StTextDiv>
-          내용
-          <StInput
+    <StyledEditTodoForm onSubmit={onUpdateHandler}>
+      <StyledEditBox>
+        <StyledIdDiv>No.{initialState.id}</StyledIdDiv>
+        <div>
+          <Input
             required
             onChange={(e) => {
               setText(e.target.value);
             }}
             value={text}
           />
-        </StTextDiv>
-        <StDeadLineDiv>
-          기한
-          <StInput
+        </div>
+        <div>
+          <Input
             type="date"
             required
             onChange={(e) => {
@@ -65,26 +72,26 @@ const EditTodoModal = (props) => {
             value={deadLine}
             min={todaysDate}
           />
-        </StDeadLineDiv>
-        <div style={{ display: "flex", gap: "10px" }}>
-          <StEditButton type="submit">수정</StEditButton>
-          <StDeleteButton
-            type="button"
+        </div>
+        <StyledButtonsDiv>
+          <Button type={"submit"}>수정</Button>
+          <Button
+            type={"button"}
             onClick={() => {
               closeModal(true);
             }}
           >
             닫기
-          </StDeleteButton>
-        </div>
-      </StEditBox>
-    </StEditTodoForm>
+          </Button>
+        </StyledButtonsDiv>
+      </StyledEditBox>
+    </StyledEditTodoForm>
   );
 };
 
 export default EditTodoModal;
 
-const StEditTodoForm = styled.form`
+const StyledEditTodoForm = styled.form`
   z-index: 99;
   position: fixed;
   top: 0;
@@ -93,12 +100,12 @@ const StEditTodoForm = styled.form`
   right: 0;
   background: rgba(0, 0, 0, 0.3);
 `;
-const StEditBox = styled.div`
+const StyledEditBox = styled.div`
   padding: 30px;
   position: absolute;
   top: calc(50vh - 220px);
   left: calc(50vw - 230px);
-  background-color: white;
+  background-color: #d9d9d9;
   display: block;
   text-align: center;
   justify-content: center;
@@ -106,30 +113,11 @@ const StEditBox = styled.div`
   width: 400px;
   height: 300px;
 `;
-const StIdDiv = styled.div`
-  margin-top: 30px;
+const StyledIdDiv = styled.div`
+  margin-bottom: 20px;
 `;
-const StTextDiv = styled.div`
-  margin-top: 40px;
-`;
-const StInput = styled.input`
-  margin-left: 10px;
-  width: 200px;
-`;
-const StDeadLineDiv = styled.div`
-  margin-top: 30px;
-`;
-const StEditButton = styled.button`
-  margin: 50px 0 0 100px;
-  width: 100px;
-  height: 30px;
-  border: none;
-  border-radius: 5px;
-`;
-const StDeleteButton = styled.button`
-  margin-top: 50px;
-  width: 100px;
-  height: 30px;
-  border: none;
-  border-radius: 5px;
+const StyledButtonsDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 20px;
 `;

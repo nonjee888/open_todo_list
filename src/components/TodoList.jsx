@@ -90,7 +90,7 @@ const TodoList = (props) => {
               );
             })}
           <StPageNumberUl>
-            {pageNumber.map((pageNum) => {
+            {localPageNumber.map((pageNum) => {
               return (
                 <Pagination
                   pageNum={pageNum}
