@@ -24,37 +24,22 @@ src="https://camo.githubusercontent.com/cf845c8e26b768508a83f459bf45bd7c85c0646f
 
 ## 작업 환경 설정
 
-<<<<<<< HEAD
 - Visual Studio Code
 - Node.js
 - npm
 - yarn
 - create-react-app
-=======
--Visual Studio Code
--Node.js
--npm
--yarn
--create-react-app
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
 
 ## 시작
 
 ```bash
-<<<<<<< HEAD
-=======
 
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
 yarn start
 json-server db.json --routes routes.json --port 3001
 
 ```
 
-<<<<<<< HEAD
 - 환경변수 설정
-=======
-환경변수 설정
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
 
 ## 기능 & 동작 원리 </br>
 
@@ -80,10 +65,7 @@ json-server db.json --routes routes.json --port 3001
     todoArr.push(req);
 
     localStorage.setItem("allTodos", JSON.stringify(todoArr));
-<<<<<<< HEAD
-=======
 
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
     // API Post
     dispatch(createTodos(req));
     setText("");
@@ -112,28 +94,16 @@ json-server db.json --routes routes.json --port 3001
 
 ```javaScript
 
-<<<<<<< HEAD
+
   // todo 상세페이지 조회 API 요청
   useEffect(() => {
     dispatch(getTodos(id));
     // 상세페이지에서 벗어날 때 리듀서 이용해서 데이터 초기화 해 줌
-=======
-// todo 상세페이지 조회 API 요청
-  useEffect(() => {
-    dispatch(getTodos(id));
-
-  // 상세페이지에서 벗어날 때 리듀서 이용해서 데이터 초기화 해 줌
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
     return () => {
       dispatch(todos.actions.clearDetail());
     };
   }, []);
-<<<<<<< HEAD
   // 데이터가 성공적으로 들어오고 deadLine(todo의 기한)이 있을 때, 3일 전 부터 몇일 남았는지 alert 띄우기
-=======
-
-// 데이터가 성공적으로 들어오고 deadLine(todo의 기한)이 있을 때, 3일 전 부터 몇일 남았는지 alert 띄우기
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
   useEffect(() => {
     if (isLoading) return;
     if (detail?.deadLine !== undefined) {
@@ -145,11 +115,8 @@ json-server db.json --routes routes.json --port 3001
         }
     }
   }, [detail.deadLine]);
-<<<<<<< HEAD
   // data가 처음에 undefined 였다가 들어옴. 의존성 배열에 detail.deadLine 추가
-=======
-// data가 처음에 undefined 였다가 들어옴. 의존성 배열에 detail.deadLine 추가
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
+
 ```
 
 #### 동작 원리
@@ -205,10 +172,6 @@ json-server db.json --routes routes.json --port 3001
           const index = localTodos.findIndex(
             (todo) => todo.id === checkedItems[i]
           );
-<<<<<<< HEAD
-=======
-
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
           // 일치하는 데이터가 있으면 배열화한 데이터에서 삭제해주기
           if (index > -1) {
             localTodos.splice(index, 1);
@@ -225,12 +188,7 @@ json-server db.json --routes routes.json --port 3001
         return false;
       }
     }
-<<<<<<< HEAD
   };
-=======
-
-};
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
 
 ````
 
@@ -254,10 +212,6 @@ json-server db.json --routes routes.json --port 3001
       }
     }
   );
-<<<<<<< HEAD
-=======
-
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
   // ...생략
   export const todos = createSlice({
     name: "todos",
@@ -273,18 +227,9 @@ json-server db.json --routes routes.json --port 3001
       state.detail = {};
     },
   },
-<<<<<<< HEAD
   // ...생략
   // todo배열의 id와 action으로 들어온 id들과 비교해 같은 것 찾아 삭제
   extraReducers:{
-=======
-
-  // ...생략
-
-  // todo배열의 id와 action으로 들어온 id들과 비교해 같은 것 찾아 삭제
-  extraReducers:{
-
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
     [deleteTodos.pending]: (state) => {
       state.isLoading = true;
     },
@@ -339,7 +284,6 @@ json-server db.json --routes routes.json --port 3001
       const todoo = todo.text || "";
       return todoo.toLowerCase().includes(query && query.toLowerCase());
     });
-<<<<<<< HEAD
   // 날짜별 오름차순 정렬
   const sortedTodos = filteredTodos.sort(
     (a, b) => new Date(a.deadLine) - new Date(b.deadLine)
@@ -362,46 +306,15 @@ json-server db.json --routes routes.json --port 3001
         {pageNumber.map((pageNum) => {
           return (
             <Pagination
-=======
-
-// 날짜별 오름차순 정렬
-const sortedTodos = filteredTodos.sort(
-(a, b) => new Date(a.deadLine) - new Date(b.deadLine)
-);
-
-// 각 페이지에서 보여질 투두 배열
-const currentTodos = sortedTodos?.slice(indexOfFirstTodo, indexOfLastTodo);
-
-// 페이지 나누기
-const pageNumber = [];
-const totalTodos = todos.length;
-for (let i = 1; i <= Math.ceil(totalTodos / todosPerPage); i++) {
-pageNumber.push(i);
-}
-
-//...생략
-
-return (
-<>
-{currentTodos.map((todo, idx) => {
-return <Todo props={props} todo={todo} key={todo.id} idx={idx} />;
-})}
-<StPageNumberUl>
-{pageNumber.map((pageNum) => {
-return (
-<Pagination
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
               pageNum={pageNum}
               key={pageNum}
               paginate={paginate}
               selected={currentPage}
-            />
-);
-})}
-</StPageNumberUl>
-</>
-);
-};
+            />);
+        })}
+      </StPageNumberUl>
+    </>
+  );
 
 ````
 #### 동작 원리
@@ -421,10 +334,6 @@ return (
 
   // 검색어 input value에 initialState를 localStorage에 저장한 데이터로 지정
   const [query, setQuery] = useState(localStorage.getItem("search"));
-<<<<<<< HEAD
-=======
-
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
   const handleSearch = (e) => {
     setQuery(e.target.value);
     localStorage.setItem("search", e.target.value);
@@ -461,7 +370,6 @@ return (
 ### fetch, get 
  
 미들웨어에서 catch로 AxiosError가 잡히면 extraReducer에서 state.error에 저장하여 useSelector를 이용해 error일때 로컬스토리지에서 가져온 데이터를 보여주도록 구현했습니다.
-<<<<<<< HEAD
 
 #### List.jsx
 
@@ -492,38 +400,6 @@ return (
      );
    }
 
-=======
-
-#### List.jsx
-
-```javaScript
-
- if (error) {
-    return (
-      <div>
-        {currentLocalTodos &&
-          currentLocalTodos.map((todo) => {
-            return (
-              <Todo props={props} todo={todo} key={todo.id} error={error} />
-            );
-          })}
-        <StPageNumberUl>
-          {localPageNumber.map((pageNum) => {
-            return (
-              <Pagination
-                pageNum={pageNum}
-                key={pageNum}
-                paginate={paginate}
-                selected={currentPage}
-              />
-            );
-          })}
-        </StPageNumberUl>
-      </div>
-    );
-  }
-
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
 ```
 
 ### delete
@@ -553,7 +429,6 @@ TodoDetail.jsx(todo 상세페이지)에서 error 일 때 localStorage에 저장�
       if (data.statusText === "OK") {
         navigate("/");
       }
-<<<<<<< HEAD
       // API offline 일 때,
     } catch {
       // 로컬스토리지의 투두들을 리스트로 변환
@@ -563,23 +438,6 @@ TodoDetail.jsx(todo 상세페이지)에서 error 일 때 localStorage에 저장�
       const index = localTodos.findIndex((todo) => todo.id === initialState.id);
       // 수정할 투두로 배열 원소 교체
       localTodos.splice(index, 1, req);
-=======
-
-      // API offline 일 때,
-
-    } catch {
-
-      // 로컬스토리지의 투두들을 리스트로 변환
-      const todosFromLocalStorage = localStorage.getItem("allTodos");
-      const localTodos = JSON.parse(todosFromLocalStorage);
-
-      // 수정할 투두 index 찾기
-      const index = localTodos.findIndex((todo) => todo.id === initialState.id);
-
-      // 수정할 투두로 배열 원소 교체
-      localTodos.splice(index, 1, req);
-
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
       // 교체된 배열 다시 로컬스토리지 저장
       let allTodos = JSON.stringify(localTodos);
       localStorage.setItem("allTodos", allTodos);
@@ -594,7 +452,6 @@ TodoDetail.jsx(todo 상세페이지)에서 error 일 때 localStorage에 저장�
 ## [회고 : 잘 안된것, 새롭게 알게된 것들 톺아보기](https://nonjee888.tistory.com/entry/%EC%9E%98-%EC%95%88-%EB%90%98%EC%97%88%EB%8D%98%EA%B2%83-%ED%86%BA%EC%95%84%EB%B3%B4%EA%B8%B0)
 <<<<<<< HEAD
 
- 
-  
 =======
->>>>>>> 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
+
+> > > > > > > 88ab60f ([refactor] App.css, index.css 삭제, 스타일 Layout에 적용)
