@@ -36,16 +36,10 @@ const Form = () => {
       text,
       deadLine,
     };
+    // LocalStorage에 todo 추가
+    storage.addTodo("allTodos", req);
 
-    // 로컬스토리지에 저장 할 배열 생성
-    let todoArr = [];
-
-    // 로컬스토리지에 추가
-    todoArr = storage.parseToArray("allTodos") || [];
-    todoArr.push(req);
-    storage.save("allTodos", todoArr);
-
-    // API Post
+    // API Post 요청
     dispatch(createTodos(req));
     setText("");
     setDeadLine("");
@@ -53,20 +47,8 @@ const Form = () => {
 
   const onDeleteHandler = () => {
     if (checkedItems.length > 0 && window.confirm("삭제할까요?") === true) {
-      // 로컬스토리지의 투두들을 리스트로 변환
-      const localTodos = storage.parseToArray("allTodos");
-      // 로컬스토리지에서 삭제
-      for (let i = 0; i < checkedItems.length; i++) {
-        const index =
-          localTodos &&
-          localTodos.findIndex((todo) => todo.id === checkedItems[i]);
-        if (index > -1) {
-          localTodos && localTodos.splice(index, 1);
-        }
-        // 삭제된 배열을 다시 로컬스토리지에 넣어줌
-        storage.save("allTodos", localTodos);
-      }
-
+      // LocalStorage Delete
+      storage.deleteById(checkedItems);
       // API Delete
       dispatch(deleteTodos(checkedItems));
       setCheckedItems([]);
@@ -78,7 +60,7 @@ const Form = () => {
 
   const handleSearch = (e) => {
     setQuery(e.target.value);
-    localStorage.setItem("search", e.target.value);
+    storage.saveQuery("search", e.target.value);
   };
 
   return (

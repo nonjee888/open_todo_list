@@ -25,8 +25,6 @@ const StInput = styled.input`
 const StTextdiv = styled.div`
   &:hover {
     color: #0071ce;
-    font-weight: bold;
-    font-size: large;
   }
 `;
 

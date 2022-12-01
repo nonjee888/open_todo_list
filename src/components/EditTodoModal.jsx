@@ -65,14 +65,8 @@ const EditTodoModal = (props) => {
         navigate("/");
       }
     } catch {
-      // 로컬스토리지의 투두들을 리스트로 변환
-      const localTodos = storage.parseToArray("allTodos");
-      // 수정할 투두 index 찾기
-      const index = localTodos.findIndex((todo) => todo.id === initialState.id);
-      // 수정할 투두로 배열 원소 교체
-      localTodos.splice(index, 1, req);
-      // 교체된 배열 다시 로컬스토리지 저장
-      storage.save("allTodos", localTodos);
+      // LocalStorage todo 수정
+      storage.updateById("allTodos", initialState.id, req);
       navigate("/");
     }
   };

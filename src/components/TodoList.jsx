@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTodos } from "../redux/modules/todos";
 import { storage } from "../utils/storage";
-import Pagination from "./Pagenation";
+import { page } from "../utils/page";
+import Pagination from "./Pagination";
 
 const StPageNumberUl = styled.ul`
   display: flex;
@@ -24,7 +25,7 @@ const TodoList = (props) => {
   const query = props.query || "";
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const [todosPerPage] = useState(5);
+  const todosPerPage = 5;
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   const indexOfLastTodo = currentPage * todosPerPage;
   const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
@@ -57,34 +58,19 @@ const TodoList = (props) => {
 
   let localPageNumber = [];
 
-  // 로컬스토리지의 투두들을 리스트로 변환
+  // // 로컬스토리지의 투두들을 리스트로 변환
   const localTodos = storage.parseToArray("allTodos");
 
-  // 키워드 search시 로컬스토리지 전체 투두 필터
-  const filteredLocalTodos =
-    localTodos &&
-    localTodos.filter((todo) => {
-      if (query === "") return localTodos;
-      const todoo = todo.text || "";
-      return todoo.toLowerCase().includes(query.toLowerCase());
-    });
-
-  // 로컬스토리지 투두 배열 오름차순으로 정렬
-  const sortedLocalTodos =
-    filteredLocalTodos &&
-    filteredLocalTodos.sort(
-      (a, b) => new Date(a.deadLine) - new Date(b.deadLine)
-    );
-
   // 각 페이지에서 보여질 로컬스토리지의 투두 배열
-  const currentLocalTodos = sortedLocalTodos?.slice(
+  const currentLocalTodos = page.showCurrentTodos(
     indexOfFirstTodo,
-    indexOfLastTodo
+    indexOfLastTodo,
+    localTodos,
+    query
   );
-  const totalLocalTodos = localTodos && localTodos.length;
 
   //pageNumber ( 전체 페이지 수 / 각 페이지 당 포스트 수) 를 계산하여 전체 페이지 번호를 구한 배열
-  for (let i = 1; i <= Math.ceil(totalLocalTodos / todosPerPage); i++) {
+  for (let i = 1; i <= page.number(localTodos, todosPerPage); i++) {
     localPageNumber.push(i);
   }
 

@@ -6,10 +6,15 @@ const date = {
   parseByDate(value) {
     return Date.parse(value);
   },
+
   calculateDaysLeft(selectedDate, today) {
     return Math.ceil((selectedDate - today) / MILLISECONDS);
   },
-  alertfrom3DaysLeft(value, daysLeft) {
+
+  alertfrom3DaysLeft(value) {
+    const selectedDate = date.parseByDate(value);
+    const daysLeft = date.calculateDaysLeft(selectedDate, today);
+
     setTimeout(() => {
       if (value !== undefined) {
         if (0 < daysLeft && daysLeft < 4) {

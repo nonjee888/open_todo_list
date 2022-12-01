@@ -48,8 +48,6 @@ const TodoDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [modal, setModal] = useState(false);
-  const selectedDate = date.parseByDate(detail.deadLine);
-  const daysLeft = date.calculateDaysLeft(selectedDate, today);
 
   useEffect(() => {
     dispatch(getTodos(id));
@@ -60,25 +58,20 @@ const TodoDetail = () => {
 
   useEffect(() => {
     if (isLoading) return;
-    date.alertfrom3DaysLeft(detail?.deadLine, daysLeft);
+    date.alertfrom3DaysLeft(detail?.deadLine);
   }, [detail.deadLine]);
 
   const closeModal = () => {
     setModal(false);
   };
+
   /*--------------------- localStorage ---------------------*/
-  const localTodos = storage.parseToArray("allTodos");
-  const localTodosDetail =
-    localTodos &&
-    localTodos.filter((detail) => {
-      return detail.id === id;
-    });
+
+  const localTodosDetail = storage.selectById(id);
 
   useEffect(() => {
     if (error?.message === "Network Error") {
-      const selectedDate = date.parseByDate(localTodosDetail[0].deadLine);
-      const daysLeft = date.calculateDaysLeft(selectedDate, today);
-      date.alertfrom3DaysLeft(localTodosDetail[0]?.deadLine, daysLeft);
+      date.alertfrom3DaysLeft(localTodosDetail[0]?.deadLine);
     }
   }, [localTodosDetail[0]?.deadLine]);
 
