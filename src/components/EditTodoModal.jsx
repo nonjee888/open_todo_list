@@ -1,9 +1,41 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { storage } from "../utils/storage";
 import styled from "styled-components";
 import Input from "./Input";
 import Button from "./Button";
+
+const StyledEditTodoForm = styled.form`
+  z-index: 99;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.3);
+`;
+const StyledEditBox = styled.div`
+  padding: 30px;
+  position: absolute;
+  top: calc(50vh - 220px);
+  left: calc(50vw - 230px);
+  background-color: #d9d9d9;
+  display: block;
+  text-align: center;
+  justify-content: center;
+  border-radius: 10px;
+  width: 400px;
+  height: 300px;
+`;
+const StyledIdDiv = styled.div`
+  margin-bottom: 20px;
+`;
+const StyledButtonsDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+`;
 
 const EditTodoModal = (props) => {
   const navigate = useNavigate();
@@ -36,15 +68,13 @@ const EditTodoModal = (props) => {
       }
     } catch {
       // 로컬스토리지의 투두들을 리스트로 변환
-      const todosFromLocalStorage = localStorage.getItem("allTodos");
-      const localTodos = JSON.parse(todosFromLocalStorage);
+      const localTodos = storage.parseToArray("allTodos");
       // 수정할 투두 index 찾기
       const index = localTodos.findIndex((todo) => todo.id === initialState.id);
       // 수정할 투두로 배열 원소 교체
       localTodos.splice(index, 1, req);
       // 교체된 배열 다시 로컬스토리지 저장
-      let allTodos = JSON.stringify(localTodos);
-      localStorage.setItem("allTodos", allTodos);
+      storage.save("allTodos", localTodos);
       navigate("/");
     }
   };
@@ -90,34 +120,3 @@ const EditTodoModal = (props) => {
 };
 
 export default EditTodoModal;
-
-const StyledEditTodoForm = styled.form`
-  z-index: 99;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.3);
-`;
-const StyledEditBox = styled.div`
-  padding: 30px;
-  position: absolute;
-  top: calc(50vh - 220px);
-  left: calc(50vw - 230px);
-  background-color: #d9d9d9;
-  display: block;
-  text-align: center;
-  justify-content: center;
-  border-radius: 10px;
-  width: 400px;
-  height: 300px;
-`;
-const StyledIdDiv = styled.div`
-  margin-bottom: 20px;
-`;
-const StyledButtonsDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-`;

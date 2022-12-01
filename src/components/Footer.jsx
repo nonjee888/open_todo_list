@@ -1,11 +1,5 @@
 import styled from "styled-components";
 
-const Footer = () => {
-  return <StFooter>2022.11.16 Front-End 노은지</StFooter>;
-};
-
-export default Footer;
-
 const StFooter = styled.div`
   height: 40px;
   width: 100%;
@@ -15,3 +9,9 @@ const StFooter = styled.div`
   justify-content: center;
   background-color: #ececec;
 `;
+
+const Footer = () => {
+  return <StFooter>2022.11.16 Front-End 노은지</StFooter>;
+};
+
+export default Footer;

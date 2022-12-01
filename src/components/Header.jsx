@@ -1,11 +1,5 @@
 import styled from "styled-components";
 
-const Header = () => {
-  return <StHeader>TO DO LIST</StHeader>;
-};
-
-export default Header;
-
 const StHeader = styled.div`
   font-size: 40px;
   font-weight: 900;
@@ -16,3 +10,9 @@ const StHeader = styled.div`
   width: 100%;
   background-color: #ffffffcc;
 `;
+
+const Header = () => {
+  return <StHeader>TO DO LIST</StHeader>;
+};
+
+export default Header;

@@ -1,6 +1,35 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
+const StTodoUl = styled.ul`
+  list-style: none;
+  padding-inline-start: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+`;
+const StTodoLi = styled.li`
+  height: 100px;
+  list-style: none;
+  align-items: center;
+  padding-left: 10px;
+  cursor: pointer;
+  background-color: aliceblue;
+  display: grid;
+  grid-template-columns: 5% 70% 20%;
+  gap: 20px;
+`;
+const StInput = styled.input`
+  width: 20px;
+  height: 20px;
+`;
+const StTextdiv = styled.div`
+  &:hover {
+    color: #0071ce;
+    font-weight: bold;
+    font-size: large;
+  }
+`;
+
 const Todo = ({ props, todo }) => {
   const { checkedItems, setCheckedItems } = props;
   const navigate = useNavigate();
@@ -41,31 +70,3 @@ const Todo = ({ props, todo }) => {
 };
 
 export default Todo;
-const StTodoUl = styled.ul`
-  list-style: none;
-  padding-inline-start: 0;
-  margin-block-start: 0;
-  margin-block-end: 0;
-`;
-const StTodoLi = styled.li`
-  height: 100px;
-  list-style: none;
-  align-items: center;
-  padding-left: 10px;
-  cursor: pointer;
-  background-color: aliceblue;
-  display: grid;
-  grid-template-columns: 5% 70% 20%;
-  gap: 20px;
-`;
-const StInput = styled.input`
-  width: 20px;
-  height: 20px;
-`;
-const StTextdiv = styled.div`
-  &:hover {
-    color: #0071ce;
-    font-weight: bold;
-    font-size: large;
-  }
-`;

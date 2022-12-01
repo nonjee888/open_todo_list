@@ -3,7 +3,21 @@ import Todo from "./Todo";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchTodos } from "../redux/modules/todos";
+import { storage } from "../utils/storage";
 import Pagination from "./Pagenation";
+
+const StPageNumberUl = styled.ul`
+  display: flex;
+  justify-content: center;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  list-style: none;
+  padding: 0;
+  gap: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background-color: aliceblue;
+`;
 
 const TodoList = (props) => {
   const { todos, error } = useSelector((state) => state.todos);
@@ -44,8 +58,7 @@ const TodoList = (props) => {
   let localPageNumber = [];
 
   // 로컬스토리지의 투두들을 리스트로 변환
-  const todosFromLocalStorage = localStorage.getItem("allTodos");
-  const localTodos = JSON.parse(todosFromLocalStorage);
+  const localTodos = storage.parseToArray("allTodos");
 
   // 키워드 search시 로컬스토리지 전체 투두 필터
   const filteredLocalTodos =
@@ -126,16 +139,3 @@ const TodoList = (props) => {
 };
 
 export default TodoList;
-
-const StPageNumberUl = styled.ul`
-  display: flex;
-  justify-content: center;
-  margin-block-start: 0;
-  margin-block-end: 0;
-  list-style: none;
-  padding: 0;
-  gap: 10px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  background-color: aliceblue;
-`;

@@ -1,15 +1,5 @@
 import styled from "styled-components";
 
-const Button = (props) => {
-  return (
-    <StyledButton type={props.type} onClick={props.onClick}>
-      {props.children}
-    </StyledButton>
-  );
-};
-
-export default Button;
-
 const StyledButton = styled.button`
   margin-top: 35px;
   width: 50px;
@@ -19,3 +9,13 @@ const StyledButton = styled.button`
   border-radius: 5px;
   background: aliceblue;
 `;
+
+const Button = (props) => {
+  return (
+    <StyledButton type={props.type} onClick={props.onClick}>
+      {props.children}
+    </StyledButton>
+  );
+};
+
+export default Button;

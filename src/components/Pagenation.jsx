@@ -1,24 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-const Pagination = ({ pageNum, paginate, selected }) => {
-  return (
-    <StNumber
-      key={pageNum}
-      onClick={() => paginate(pageNum)}
-      style={
-        selected === pageNum
-          ? { background: "#ececec", fontWeight: "900" }
-          : { background: "#ffffff" }
-      }
-    >
-      {pageNum}
-    </StNumber>
-  );
-};
-
-export default Pagination;
-
 const StNumber = styled.li`
   border-radius: 100%;
   width: 30px;
@@ -36,3 +18,21 @@ const StNumber = styled.li`
     text-decoration: underline;
   }
 `;
+
+const Pagination = ({ pageNum, paginate, selected }) => {
+  return (
+    <StNumber
+      key={pageNum}
+      onClick={() => paginate(pageNum)}
+      style={
+        selected === pageNum
+          ? { background: "#ececec", fontWeight: "900" }
+          : { background: "#ffffff" }
+      }
+    >
+      {pageNum}
+    </StNumber>
+  );
+};
+
+export default Pagination;

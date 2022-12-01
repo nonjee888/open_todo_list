@@ -8,6 +8,18 @@ import nextId from "react-id-generator";
 import Button from "./Button";
 import Input from "./Input";
 
+const StForm = styled.form`
+  background-color: #ececec;
+  height: 100px;
+`;
+const StElementsDiv = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-left: 10px;
+  gap: 20px;
+`;
+
 const Form = () => {
   const id = nextId();
   const [text, setText] = useState("");
@@ -112,15 +124,3 @@ const Form = () => {
 };
 
 export default Form;
-
-const StForm = styled.form`
-  background-color: #ececec;
-  height: 100px;
-`;
-const StElementsDiv = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  margin-left: 10px;
-  gap: 20px;
-`;
