@@ -67,7 +67,7 @@ export const deleteTodos = createAsyncThunk(
         .delete(process.env.REACT_APP_HOST + `/api/todos/${payload[i]}`)
 
         .then((res) => {
-          console.log(res);
+          // console.log(res);
         })
         .catch((error) => {
           console.log(error.message);

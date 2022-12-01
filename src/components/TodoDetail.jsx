@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { storage } from "../utils/storage";
+import { today, date } from "../utils/date";
 import todos, { getTodos } from "../redux/modules/todos";
 import EditTodoModal from "./EditTodoModal";
 import Button from "./Button";
@@ -47,11 +48,8 @@ const TodoDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [modal, setModal] = useState(false);
-  const todaysDate = new Date().toISOString().split("T")[0];
-  const today = Date.parse(todaysDate);
-  const selectedDate = Date.parse(detail.deadLine) || "";
-  const milliSeconds = 24 * 60 * 60 * 1000;
-  const daysLeft = Math.ceil((selectedDate - today) / milliSeconds) || "";
+  const selectedDate = date.parseByDate(detail.deadLine);
+  const daysLeft = date.calculateDaysLeft(selectedDate, today);
 
   useEffect(() => {
     dispatch(getTodos(id));
@@ -62,14 +60,7 @@ const TodoDetail = () => {
 
   useEffect(() => {
     if (isLoading) return;
-    if (detail?.deadLine !== undefined) {
-      if (!daysLeft) return;
-      if (daysLeft && 0 < daysLeft && daysLeft < 4) {
-        alert(`D-day 까지 ${daysLeft}일 남았습니다`);
-      } else if (daysLeft === 0) {
-        alert("D-day입니다");
-      }
-    }
+    date.alertfrom3DaysLeft(detail?.deadLine, daysLeft);
   }, [detail.deadLine]);
 
   const closeModal = () => {
@@ -84,19 +75,10 @@ const TodoDetail = () => {
     });
 
   useEffect(() => {
-    if (error) {
-      const todaysDate = new Date().toISOString().split("T")[0];
-      const today = Date.parse(todaysDate);
-      const selectedDate = Date.parse(localTodosDetail[0].deadLine);
-      const milliSeconds = 24 * 60 * 60 * 1000;
-      const daysLeft = Math.ceil((selectedDate - today) / milliSeconds);
-      setTimeout(() => {
-        if (0 < daysLeft && daysLeft < 4) {
-          alert(`D-day 까지 ${daysLeft}일 남았습니다`);
-        } else if (daysLeft === 0) {
-          alert("D-day입니다");
-        }
-      }, 500);
+    if (error?.message === "Network Error") {
+      const selectedDate = date.parseByDate(localTodosDetail[0].deadLine);
+      const daysLeft = date.calculateDaysLeft(selectedDate, today);
+      date.alertfrom3DaysLeft(localTodosDetail[0]?.deadLine, daysLeft);
     }
   }, [localTodosDetail[0]?.deadLine]);
 

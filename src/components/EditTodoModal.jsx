@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { storage } from "../utils/storage";
+import { todaysDate } from "../utils/date";
 import styled from "styled-components";
 import Input from "./Input";
 import Button from "./Button";
@@ -47,9 +48,6 @@ const EditTodoModal = (props) => {
   };
   const [text, setText] = useState(initialState.text);
   const [deadLine, setDeadLine] = useState(initialState.deadLine);
-
-  // 오늘 날짜
-  const todaysDate = new Date().toISOString().split("T")[0];
 
   const onUpdateHandler = async (e) => {
     e.preventDefault();

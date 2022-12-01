@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createTodos, deleteTodos } from "../redux/modules/todos";
+import { todaysDate } from "../utils/date";
 import { storage } from "../utils/storage";
 import nextId from "react-id-generator";
 import Button from "./Button";
@@ -27,9 +28,6 @@ const Form = () => {
   const [checkedItems, setCheckedItems] = useState([]);
   const [query, setQuery] = useState(() => localStorage.getItem("search"));
   const dispatch = useDispatch();
-
-  // 오늘 날짜
-  const todaysDate = new Date().toISOString().split("T")[0];
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
