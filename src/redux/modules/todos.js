@@ -1,11 +1,17 @@
-import axios from "axios";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  fetchTodo,
+  getTodo,
+  createTodo,
+  deleteTodoById,
+  deleteTodo,
+} from "../../utils/api";
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 
 export const fetchTodos = createAsyncThunk(
   "todos/fetchTodos",
   async (_, thunkAPI) => {
     try {
-      const data = await axios.get(process.env.REACT_APP_HOST + "/api/todos");
+      const data = await fetchTodo();
 
       return thunkAPI.fulfillWithValue(data.data);
     } catch (error) {
@@ -18,9 +24,8 @@ export const getTodos = createAsyncThunk(
   "todos/getTodos",
   async (payload, thunkAPI) => {
     try {
-      const { data } = await axios.get(
-        process.env.REACT_APP_HOST + `/api/todos/${payload}`
-      );
+      const { data } = await getTodo(payload);
+      // console.log(data);
       return thunkAPI.fulfillWithValue(data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
@@ -32,10 +37,7 @@ export const createTodos = createAsyncThunk(
   "todos/createTodos",
   async (payload, thunkAPI) => {
     try {
-      const data = await axios.post(
-        process.env.REACT_APP_HOST + "/api/todos",
-        payload
-      );
+      const data = await createTodo(payload);
 
       return thunkAPI.fulfillWithValue(data);
     } catch (error) {
@@ -44,35 +46,10 @@ export const createTodos = createAsyncThunk(
   }
 );
 
-export const updateTodos = createAsyncThunk(
-  "todos/updateTodos",
-  async (payload, thunkAPI) => {
-    try {
-      const data = await axios.put(
-        process.env.REACT_APP_HOST + `/api/todos/${payload}`,
-        payload
-      );
-      return thunkAPI.fulfillWithValue(data);
-    } catch (error) {
-      thunkAPI.rejectWithValue(error);
-    }
-  }
-);
-
 export const deleteTodos = createAsyncThunk(
   "todos/deleteTodos",
   async (payload) => {
-    for (let i = 0; i < payload.length; i++) {
-      await axios
-        .delete(process.env.REACT_APP_HOST + `/api/todos/${payload[i]}`)
-
-        .then((res) => {
-          // console.log(res);
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-    }
+    deleteTodoById(payload);
   }
 );
 
@@ -89,58 +66,55 @@ export const todos = createSlice({
       state.detail = {};
     },
   },
-  extraReducers: {
-    [fetchTodos.pending]: (state) => {
-      state.isLoading = true;
-    },
-    [fetchTodos.fulfilled]: (state, action) => {
-      state.isLoading = false;
-      state.todos = action.payload;
-    },
-    [fetchTodos.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
-    [getTodos.pending]: (state) => {
-      state.isLoading = true;
-    },
-    [getTodos.fulfilled]: (state, action) => {
-      state.isLoading = false;
-      state.detail = action.payload;
-    },
-    [getTodos.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
-    [createTodos.pending]: (state) => {
-      state.isLoading = true;
-    },
-    [createTodos.fulfilled]: (state, action) => {
-      state.isLoading = false;
-      state.todos.push(action.payload.data);
-    },
-    [createTodos.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
-    [deleteTodos.pending]: (state) => {
-      state.isLoading = true;
-    },
-    [deleteTodos.fulfilled]: (state, action) => {
-      state.isLoading = false;
-      let length = action.meta.arg.length;
-      for (let i = 0; i < length; i++) {
-        let index = state.todos.findIndex(
-          (todo) => todo.id === action.meta.arg[i]
-        );
-        state.todos.splice(index, 1);
-      }
-    },
-
-    [deleteTodos.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTodos.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchTodos.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.todos = action.payload;
+      })
+      .addCase(fetchTodos.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
+    builder
+      .addCase(getTodos.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getTodos.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.detail = action.payload;
+      })
+      .addCase(getTodos.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
+    builder
+      .addCase(createTodos.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createTodos.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.todos.push(action.payload.data);
+      })
+      .addCase(createTodos.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
+    builder
+      .addCase(deleteTodos.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteTodos.fulfilled, (state, action) => {
+        state.isLoading = false;
+        deleteTodo(state, action);
+      })
+      .addCase(deleteTodos.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
   },
 });
 

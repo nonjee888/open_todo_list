@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { storage } from "../utils/storage";
 import { todaysDate } from "../utils/date";
+import { updateTodoById } from "../utils/api";
 import styled from "styled-components";
 import Input from "./Input";
 import Button from "./Button";
@@ -57,10 +57,7 @@ const EditTodoModal = (props) => {
       deadLine,
     };
     try {
-      const data = await axios.put(
-        process.env.REACT_APP_HOST + `/api/todos/${initialState.id}`,
-        req
-      );
+      const data = await updateTodoById(initialState.id, req);
       if (data.statusText === "OK") {
         navigate("/");
       }
