@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { storage } from "../utils/storage";
-import { today, date } from "../utils/date";
+import { date } from "../utils/date";
 import todos, { getTodos } from "../redux/modules/todos";
 import EditTodoModal from "./EditTodoModal";
 import Button from "./Button";
@@ -43,11 +43,12 @@ const StyledButtonsDiv = styled.div`
 `;
 
 const TodoDetail = () => {
-  const { error, detail, isLoading } = useSelector((state) => state?.todos);
+  const { error, detail } = useSelector((state) => state?.todos);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
   const [modal, setModal] = useState(false);
+  const localTodosDetail = storage.selectById(id);
 
   useEffect(() => {
     dispatch(getTodos(id));
@@ -57,23 +58,15 @@ const TodoDetail = () => {
   }, []);
 
   useEffect(() => {
-    if (isLoading) return;
     date.alertfrom3DaysLeft(detail?.deadLine);
-  }, [detail.deadLine]);
+    if (error?.message === "Network Error") {
+      date.alertfrom3DaysLeft(localTodosDetail[0]?.deadLine);
+    }
+  }, [(error && localTodosDetail[0]?.deadLine) || detail.deadLine]);
 
   const closeModal = () => {
     setModal(false);
   };
-
-  /*--------------------- localStorage ---------------------*/
-
-  const localTodosDetail = storage.selectById(id);
-
-  useEffect(() => {
-    if (error?.message === "Network Error") {
-      date.alertfrom3DaysLeft(localTodosDetail[0]?.deadLine);
-    }
-  }, [localTodosDetail[0]?.deadLine]);
 
   return (
     <>
@@ -87,25 +80,15 @@ const TodoDetail = () => {
               error={error}
             />
           ) : null}
-          {(error && (
-            <>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <StIdDiv>{localTodosDetail[0].id}</StIdDiv>
-                <StDeadLineDiv>
-                  D-Day: {localTodosDetail[0].deadLine}
-                </StDeadLineDiv>
-              </div>
-              <StTextDiv>{localTodosDetail[0].text}</StTextDiv>
-            </>
-          )) || (
-            <>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <StIdDiv>{detail.id}</StIdDiv>
-                <StDeadLineDiv>D-Day: {detail.deadLine}</StDeadLineDiv>
-              </div>
-              <StTextDiv>{detail.text}</StTextDiv>
-            </>
-          )}
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <StIdDiv>{error ? localTodosDetail[0]?.id : detail.id}</StIdDiv>
+            <StDeadLineDiv>
+              D-Day: {error ? localTodosDetail[0]?.deadLine : detail.deadLine}
+            </StDeadLineDiv>
+          </div>
+          <StTextDiv>
+            {error ? localTodosDetail[0]?.text : detail.text}
+          </StTextDiv>
           <StyledButtonsDiv>
             <Button
               onClick={() => {

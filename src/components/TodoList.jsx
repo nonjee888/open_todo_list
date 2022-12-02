@@ -25,52 +25,28 @@ const TodoList = (props) => {
   const query = props.query || "";
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const todosPerPage = 5;
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const indexOfLastTodo = currentPage * todosPerPage;
-  const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
-
-  // 키워드 search시 전체 투두를 필터
-  const filteredTodos =
-    todos &&
-    todos.filter((todo) => {
-      if (query === "") return todos;
-      const todoo = todo.text || "";
-      return todoo.toLowerCase().includes(query && query.toLowerCase());
-    });
-
-  // 날짜별 오름차순 정렬
-  const sortedTodos = filteredTodos.sort(
-    (a, b) => new Date(a.deadLine) - new Date(b.deadLine)
-  );
+  const localTodos = storage.parseToArray("allTodos");
 
   // 각 페이지에서 보여질 투두 배열
-  const currentTodos = sortedTodos?.slice(indexOfFirstTodo, indexOfLastTodo);
+  const currentTodos = page.showCurrentTodos(
+    page.indexOfFirstTodo(currentPage),
+    page.indexOfLastTodo(currentPage),
+    error ? localTodos : todos,
+    query
+  );
 
   // 페이지 나누기
   const pageNumber = [];
-  const totalTodos = todos.length;
-  for (let i = 1; i <= Math.ceil(totalTodos / todosPerPage); i++) {
+  for (let i = 1; i <= page.number(todos); i++) {
     pageNumber.push(i);
   }
 
   /*--------------------- localStorage ---------------------*/
 
-  let localPageNumber = [];
-
-  // // 로컬스토리지의 투두들을 리스트로 변환
-  const localTodos = storage.parseToArray("allTodos");
-
-  // 각 페이지에서 보여질 로컬스토리지의 투두 배열
-  const currentLocalTodos = page.showCurrentTodos(
-    indexOfFirstTodo,
-    indexOfLastTodo,
-    localTodos,
-    query
-  );
-
-  //pageNumber ( 전체 페이지 수 / 각 페이지 당 포스트 수) 를 계산하여 전체 페이지 번호를 구한 배열
-  for (let i = 1; i <= page.number(localTodos, todosPerPage); i++) {
+  // localStorage todo 페이지 나누기
+  const localPageNumber = [];
+  for (let i = 1; i <= page.number(localTodos); i++) {
     localPageNumber.push(i);
   }
 
@@ -80,15 +56,13 @@ const TodoList = (props) => {
 
   return (
     <>
-      {(error && (
-        <>
-          {currentLocalTodos &&
-            currentLocalTodos.map((todo) => {
-              return (
-                <Todo props={props} todo={todo} key={todo.id} error={error} />
-              );
-            })}
-          <StPageNumberUl>
+      {currentTodos &&
+        currentTodos.map((todo) => {
+          return <Todo props={props} todo={todo} key={todo.id} error={error} />;
+        })}
+      <StPageNumberUl>
+        {error ? (
+          <>
             {localPageNumber.map((pageNum) => {
               return (
                 <Pagination
@@ -99,14 +73,9 @@ const TodoList = (props) => {
                 />
               );
             })}
-          </StPageNumberUl>
-        </>
-      )) || (
-        <>
-          {currentTodos.map((todo, idx) => {
-            return <Todo props={props} todo={todo} key={todo.id} idx={idx} />;
-          })}
-          <StPageNumberUl>
+          </>
+        ) : (
+          <>
             {pageNumber.map((pageNum) => {
               return (
                 <Pagination
@@ -117,9 +86,9 @@ const TodoList = (props) => {
                 />
               );
             })}
-          </StPageNumberUl>
-        </>
-      )}
+          </>
+        )}
+      </StPageNumberUl>
     </>
   );
 };

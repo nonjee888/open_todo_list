@@ -1,12 +1,12 @@
+const TODOS_PER_PAGE = 5;
+
 const page = {
   indexOfLastTodo(value) {
-    const todosPerPage = 5;
-    return value * todosPerPage;
+    return value * TODOS_PER_PAGE;
   },
 
   indexOfFirstTodo(value) {
-    const todosPerPage = 5;
-    return this.indexOfLastTodo(value) - todosPerPage;
+    return this.indexOfLastTodo(value) - TODOS_PER_PAGE;
   },
 
   filterByQuery(array, query) {
@@ -33,12 +33,20 @@ const page = {
     );
   },
 
-  totalTodos(array) {
-    return array && array.length;
+  paginate(pageNumber, key) {
+    key(pageNumber);
   },
 
-  number(value1, value2) {
-    return Math.ceil(page.totalTodos(value1) / value2);
+  number(value) {
+    const lengthOfTodos = value.length;
+    return Math.ceil(lengthOfTodos / TODOS_PER_PAGE);
+  },
+
+  numberArray(value, array) {
+    // const pageNumber = [];
+    for (let i = 1; i <= page.number(value); i++) {
+      return array.push(i);
+    }
   },
 };
 
