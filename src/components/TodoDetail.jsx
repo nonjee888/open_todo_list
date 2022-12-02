@@ -49,7 +49,6 @@ const TodoDetail = () => {
   const { id } = useParams();
   const [modal, setModal] = useState(false);
   const localTodosDetail = storage.selectById(id);
-  // console.log(detail);
   useEffect(() => {
     dispatch(getTodos(id));
     return () => {
