@@ -43,10 +43,10 @@ const page = {
   },
 
   numberArray(value, array) {
-    // const pageNumber = [];
     for (let i = 1; i <= page.number(value); i++) {
-      return array.push(i);
+      array.push(i);
     }
+    return array;
   },
 };
 

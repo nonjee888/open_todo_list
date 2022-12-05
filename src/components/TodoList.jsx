@@ -38,17 +38,7 @@ const TodoList = (props) => {
 
   // 페이지 나누기
   const pageNumber = [];
-  for (let i = 1; i <= page.number(todos); i++) {
-    pageNumber.push(i);
-  }
-
-  /*--------------------- localStorage ---------------------*/
-
-  // localStorage todo 페이지 나누기
-  const localPageNumber = [];
-  for (let i = 1; i <= page.number(localTodos); i++) {
-    localPageNumber.push(i);
-  }
+  page.numberArray(error ? localTodos : todos, pageNumber);
 
   useEffect(() => {
     dispatch(fetchTodos());
@@ -61,33 +51,16 @@ const TodoList = (props) => {
           return <Todo props={props} todo={todo} key={todo.id} error={error} />;
         })}
       <StPageNumberUl>
-        {error ? (
-          <>
-            {localPageNumber.map((pageNum) => {
-              return (
-                <Pagination
-                  pageNum={pageNum}
-                  key={pageNum}
-                  paginate={paginate}
-                  selected={currentPage}
-                />
-              );
-            })}
-          </>
-        ) : (
-          <>
-            {pageNumber.map((pageNum) => {
-              return (
-                <Pagination
-                  pageNum={pageNum}
-                  key={pageNum}
-                  paginate={paginate}
-                  selected={currentPage}
-                />
-              );
-            })}
-          </>
-        )}
+        {pageNumber.map((pageNum) => {
+          return (
+            <Pagination
+              pageNum={pageNum}
+              key={pageNum}
+              paginate={paginate}
+              selected={currentPage}
+            />
+          );
+        })}
       </StPageNumberUl>
     </>
   );
