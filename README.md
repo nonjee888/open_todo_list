@@ -1,6 +1,6 @@
 ## 컴포넌트 구조
 
-![오픈소스컨설팅](https://user-images.githubusercontent.com/106578705/202835025-ab6963f3-2341-4a8d-bda3-5d32f26892e4.png)
+![오픈소스컨설팅](https://user-images.githubusercontent.com/106578705/206108432-809247c8-d714-4c2d-a37f-a1c55179e94c.png)
 
 ## 기술스택
 
