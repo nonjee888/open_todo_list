@@ -38,8 +38,7 @@ const page = {
   },
 
   number(value) {
-    const lengthOfTodos = value.length;
-    return Math.ceil(lengthOfTodos / TODOS_PER_PAGE);
+    return Math.ceil(value.length / TODOS_PER_PAGE);
   },
 
   numberArray(value, array) {
