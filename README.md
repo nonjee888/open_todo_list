@@ -37,7 +37,7 @@ yarn start
 json-server db.json --routes routes.json --port 3001
 ```
 
-- 환경변수 설정
+- 환경변수 설정하기
 
 ## 기능 & 동작 원리 </br>
 
