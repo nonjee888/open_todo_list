@@ -33,10 +33,8 @@ src="https://camo.githubusercontent.com/cf845c8e26b768508a83f459bf45bd7c85c0646f
 ## 시작
 
 ```bash
-
 yarn start
 json-server db.json --routes routes.json --port 3001
-
 ```
 
 - 환경변수 설정
