@@ -418,26 +418,30 @@ export default Pagination;
 ```javaScript
 
   // 검색어 input value에 initialState를 localStorage에 저장한 데이터로 지정
-const [query, setQuery] = useState(() => localStorage.getItem("search"));
+  const [query, setQuery] = useState(() => localStorage.getItem("search"));
+
   const handleSearch = (e) => {
     setQuery(e.target.value);
-    localStorage.setItem("search", e.target.value);
+    storage.saveQuery("search", e.target.value);
   };
 
 ```
 
-#### List.jsx
+#### page.js
 
 ```javaScript
 
   // 키워드 search시 전체 투두를 필터, 검색어 없으면 전체 배열 보여줌
-  const filteredTodos =
-    todos &&
-    todos.filter((todo) => {
-      if (query === "") return todos;
-      const todoo = todo.text || "";
-      return todoo.toLowerCase().includes(query && query.toLowerCase());
-    });
+  filterByQuery(array, query) {
+    return (
+      array &&
+      array.filter((todo) => {
+        if (query === "") return array;
+        const todoo = todo.text || "";
+        return todoo.toLowerCase().includes(query.toLowerCase());
+      })
+    );
+  },
 
 ```
 
@@ -457,82 +461,16 @@ const [query, setQuery] = useState(() => localStorage.getItem("search"));
 
 미들웨어에서 catch로 AxiosError가 잡히면 extraReducer에서 state.error에 저장하여 useSelector를 이용해 error일때 로컬스토리지에서 가져온 데이터를 보여주도록 구현했습니다.
 
-#### List.jsx
-
-```javaScript
-
-  if (error) {
-     return (
-       <div>
-         {currentLocalTodos &&
-           currentLocalTodos.map((todo) => {
-             return (
-               <Todo props={props} todo={todo} key={todo.id} error={error} />
-             );
-           })}
-         <StPageNumberUl>
-           {localPageNumber.map((pageNum) => {
-             return (
-               <Pagination
-                 pageNum={pageNum}
-                 key={pageNum}
-                 paginate={paginate}
-                 selected={currentPage}
-               />
-             );
-           })}
-         </StPageNumberUl>
-       </div>
-     );
-   }
-
-```
-
 ### delete
 
-삭제 버튼 eventHandler안에서 localStorage데이터 수정, 삭제하는 로직 구현 (Multiple Row 삭제 소스코드 참고)
+기능 & 동작원리 4. Multiple Row 삭제 소스코드를 참고 해 주세요.
 
 ### put
 
-TodoDetail.jsx(todo 상세페이지)에서 error 일 때 localStorage에 저장된 데이터들을 보여주었습니다. 수정버튼 눌렀을 때 뜨는 모달창의 input에 떠야할 값은 API통신을 하는 DB와 LocalStorage가 서로 달라서 로컬스토리지 데이터 수정용 모달을 따로 만들어주어 API offline일 때는 다른 모달을 보여주도록 구현했습니다.
-
-#### EditLocalTodoModal.jsx
-
-```javaScript
-
-  const onUpdateHandler = async (e) => {
-    e.preventDefault();
-    let req = {
-      id: initialState.id,
-      text,
-      deadLine,
-    };
-    try {
-      const data = await axios.put(
-        process.env.REACT_APP_HOST + `/api/todos/${initialState.id}`,
-        req
-      );
-      if (data.statusText === "OK") {
-        navigate("/");
-      }
-      // API offline 일 때,
-    } catch {
-      // 로컬스토리지의 투두들을 리스트로 변환
-      const todosFromLocalStorage = localStorage.getItem("allTodos");
-      const localTodos = JSON.parse(todosFromLocalStorage);
-      // 수정할 투두 index 찾기
-      const index = localTodos.findIndex((todo) => todo.id === initialState.id);
-      // 수정할 투두로 배열 원소 교체
-      localTodos.splice(index, 1, req);
-      // 교체된 배열 다시 로컬스토리지 저장
-      let allTodos = JSON.stringify(localTodos);
-      localStorage.setItem("allTodos", allTodos);
-      navigate("/");
-    }
-  };
-
-```
+기능 & 동작원리 3. Row 단위로 수정 소스코드를 참고 해 주세요.
 
 </br>
 
 ## [회고 : 잘 안된것, 새롭게 알게된 것들 톺아보기](https://nonjee888.tistory.com/entry/%EC%9E%98-%EC%95%88-%EB%90%98%EC%97%88%EB%8D%98%EA%B2%83-%ED%86%BA%EC%95%84%EB%B3%B4%EA%B8%B0)
+
+## [코드리팩토링](https://nonjee888.tistory.com/entry/221207-%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81-%EC%B6%94%EC%83%81%ED%99%94-%EB%8F%84%EC%A0%84)
