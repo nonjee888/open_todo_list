@@ -47,8 +47,6 @@ json-server db.json --routes routes.json --port 3001
 
 ```javaScript
 
-  // 오늘 날짜
-  const todaysDate = new Date().toISOString().split("T")[0];
   const onSubmitHandler = (e) => {
     e.preventDefault();
     let req = {
@@ -56,19 +54,40 @@ json-server db.json --routes routes.json --port 3001
       text,
       deadLine,
     };
-    // 로컬스토리지에 저장 할 배열 생성
-    let todoArr = [];
-    // 로컬스토리지에 추가
-    todoArr = JSON.parse(localStorage.getItem("allTodos")) || [];
-    todoArr.push(req);
+    // LocalStorage에 todo 추가
+    storage.addTodo("allTodos", req);
 
-    localStorage.setItem("allTodos", JSON.stringify(todoArr));
-
-    // API Post
+    // API Post 요청
     dispatch(createTodos(req));
     setText("");
     setDeadLine("");
   };
+
+```
+
+#### storage.js
+
+```javaScript
+
+  const storage = {
+  save(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  },
+
+  parseToArray(key) {
+    return JSON.parse(localStorage.getItem(key));
+  },
+
+  addTodo(key, req) {
+    // 로컬스토리지에 저장 할 배열 생성
+    let todoArr = [];
+    // 로컬스토리지에 추가
+    todoArr = storage.parseToArray(key) || [];
+    todoArr.push(req);
+    storage.save(key, todoArr);
+  },
+  //...생략
+}
 
 ```
 
@@ -92,37 +111,56 @@ json-server db.json --routes routes.json --port 3001
 
 ```javaScript
 
+  useEffect(() => {
+    date.alertfrom3DaysLeft(detail?.deadLine);
+    if (error?.message === "Network Error") {
+      date.alertfrom3DaysLeft(localTodosDetail[0]?.deadLine);
+    }
+  }, [(error && localTodosDetail[0]?.deadLine) || detail.deadLine]);
 
-  // todo 상세페이지 조회 API 요청
-  useEffect(() => {
-    dispatch(getTodos(id));
-    // 상세페이지에서 벗어날 때 리듀서 이용해서 데이터 초기화 해 줌
-    return () => {
-      dispatch(todos.actions.clearDetail());
-    };
-  }, []);
-  // 데이터가 성공적으로 들어오고 deadLine(todo의 기한)이 있을 때, 3일 전 부터 몇일 남았는지 alert 띄우기
-  useEffect(() => {
-    if (isLoading) return;
-    if (detail?.deadLine !== undefined) {
-        if (!daysLeft) return;
-        if (daysLeft && 0 < daysLeft && daysLeft < 4) {
+```
+
+#### date.js
+
+```javaScript
+
+const todaysDate = new Date().toISOString().split("T")[0];
+const today = Date.parse(new Date().toISOString().split("T")[0]);
+const MILLISECONDS = 24 * 60 * 60 * 1000;
+
+const date = {
+  parseByDate(value) {
+    return Date.parse(value);
+  },
+
+  calculateDaysLeft(selectedDate, today) {
+    return Math.ceil((selectedDate - today) / MILLISECONDS);
+  },
+
+  alertfrom3DaysLeft(value) {
+    const selectedDate = date.parseByDate(value);
+    const daysLeft = date.calculateDaysLeft(selectedDate, today);
+
+    setTimeout(() => {
+      if (value !== undefined) {
+        if (0 < daysLeft && daysLeft < 4) {
           alert(`D-day 까지 ${daysLeft}일 남았습니다`);
         } else if (daysLeft === 0) {
           alert("D-day입니다");
         }
-    }
-  }, [detail.deadLine]);
-  // data가 처음에 undefined 였다가 들어옴. 의존성 배열에 detail.deadLine 추가
+      }
+    }, 500);
+  },
+};
+
+export { todaysDate, today, date, MILLISECONDS };
 
 ```
 
 #### 동작 원리
 
-- To Do 상세페이지 조회 API 요청
-- API응답에 To Do 기한이 담긴 데이터가 있으면
-- new Date()이용해 오늘과 선택된 날의 값을 millisecond로 parse ⇒ 남은 일 수 구함
-- path: “/id” 로 이동 시, 몇 일 남았는지 alert
+- new Date()이용해 오늘과 선택된 날의 값을 millisecond로 parse ⇒ 남은 일 수 구해 3일 전부터 alert 뜨도록
+- path: “/id” 로 이동 시, alert 창 뜸
   </br>
 
 ## 3. Row 단위로 수정
@@ -130,24 +168,40 @@ json-server db.json --routes routes.json --port 3001
 #### EditTodoModal.jsx
 
 ```javaScript
-  // todo 상세조회에서 가져온 데이터를 initialState로 input에 띄워주기
+
   const initialState = {
-    id: detail.id,
-    text: detail.text,
-    deadLine: detail.deadLine,
+    id: error === null ? detail.id : localTodosDetail[0].id,
+    text: error === null ? detail.text : localTodosDetail[0].text,
+    deadLine: error === null ? detail.deadLine : localTodosDetail[0].deadLine,
   };
   const [text, setText] = useState(initialState.text);
   const [deadLine, setDeadLine] = useState(initialState.deadLine);
 
 ```
 
+#### storage.js
+
+```javaScript
+
+   updateById(key, value, req) {
+    // 로컬스토리지의 투두들을 리스트로 변환
+    const localTodos = storage.parseToArray(key);
+    // 수정할 투두 index 찾기
+    const index = localTodos.findIndex((todo) => todo.id === value);
+    // 수정할 투두로 배열 원소 교체
+    localTodos.splice(index, 1, req);
+    // 교체된 배열 다시 로컬스토리지 저장
+    storage.save(key, localTodos);
+  },
+
+```
+
 #### 동작 원리
 
 - Todo 상세조회페이지에서 수정 버튼 누름
-- 상세조회에서 가져온 내용과 기한을 useState의 initialState로 설정해 input에 반영
+- param과 id와 일치하는 데이터에서 가져온 내용과 기한을 useState의 initialState로 설정해 input에 반영
 - 수정에 성공하면 path “/”로 navigate
-- 로컬스토리지로 작동하는 경우
-- onUpdateHandler의 catch에서 findIndex() 이용
+- 로컬스토리지로 작동하는 경우 onUpdateHandler의 catch에서 분기처리
 - localStorage 배열의 todo id와 상세조회페이지에서 가져온 데이터의 id를 비교 ⇒ 같은 id의 index 번호를 찾아 splice()로 교체, 교체된 배열을 다시 로컬스토리지로 저장
 
 </br>
@@ -158,97 +212,93 @@ json-server db.json --routes routes.json --port 3001
   
 ```javaScript
   
-  const onDeleteHandler = () => {
-   // Todo.jsx에서 받아온 checkedItems이 0보다 클때 alert 확인 버튼 누를시,
-    if (checkedItems.length > 0) {
-      if (window.confirm("삭제할까요?") === true) {    
-        // 로컬스토리지의 투두들을 리스트로 변환
-        const todosFromLocalStorage = localStorage.getItem("allTodos");
-        const localTodos = JSON.parse(todosFromLocalStorage);
-        // 로컬스토리지에서 todo.id와 checkedItems의 id가 일치하는 것 for문 돌려 찾아서 삭제
-        for (let i = 0; i < checkedItems.length; i++) {
-          const index = localTodos.findIndex(
-            (todo) => todo.id === checkedItems[i]
-          );
-          // 일치하는 데이터가 있으면 배열화한 데이터에서 삭제해주기
-          if (index > -1) {
-            localTodos.splice(index, 1);
-          }
-          // 삭제된 배열을 다시 로컬스토리지에 넣어줌
-          let allTodos = JSON.stringify(localTodos);
-          localStorage.setItem("allTodos", allTodos);
-        }
-        // API Delete
-        dispatch(deleteTodos(checkedItems));
-        setCheckedItems([]);
-      } else {
-        setCheckedItems([]);
-        return false;
-      }
+    const onDeleteHandler = () => {
+    if (checkedItems.length > 0 && window.confirm("삭제할까요?") === true) {
+      // LocalStorage Delete
+      storage.deleteById(checkedItems);
+      // API Delete
+      dispatch(deleteTodos(checkedItems));
+      setCheckedItems([]);
+    } else {
+      setCheckedItems([]);
+      return false;
     }
   };
+```
 
-````
+#### storage.jsx
+
+```javaScript
+
+  deleteById(checkedItems) {
+    // 로컬스토리지의 투두들을 리스트로 변환
+    const localTodos = storage.parseToArray("allTodos");
+    // 로컬스토리지에서 삭제
+    for (let i = 0; i < checkedItems.length; i++) {
+      const index =
+        localTodos &&
+        localTodos.findIndex((todo) => todo.id === checkedItems[i]);
+      if (index > -1) {
+        localTodos && localTodos.splice(index, 1);
+      }
+      // 삭제된 배열을 다시 로컬스토리지에 넣어줌
+      storage.save("allTodos", localTodos);
+    }
+  },
+```
 
 #### todos.js (Redux module)
 
 ```javaScript
 
-  // 미들웨어에서 for문 이용해 multiple삭제 구현
-  export const deleteTodos = createAsyncThunk(
+// middleware
+export const deleteTodos = createAsyncThunk(
   "todos/deleteTodos",
   async (payload) => {
-    for (let i = 0; i < payload.length; i++) {
-      await axios
-        .delete(process.env.REACT_APP_HOST + `/api/todos/${payload[i]}`)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-      }
-    }
-  );
-  // ...생략
-  export const todos = createSlice({
-    name: "todos",
-    initialState: {
-      todos: [],
-      detail: {},
-      isLoading: false,
-      error: null,
-    },
-  // 상세페이지 초기화 해주는 reducer
-  reducers: {
-    clearDetail: (state, action) => {
-      state.detail = {};
-    },
-  },
-  // ...생략
-  // todo배열의 id와 action으로 들어온 id들과 비교해 같은 것 찾아 삭제
-  extraReducers:{
-    [deleteTodos.pending]: (state) => {
-      state.isLoading = true;
-    },
-    [deleteTodos.fulfilled]: (state, action) => {
-      state.isLoading = false;
-      let length = action.meta.arg.length;
-      for (let i = 0; i < length; i++) {
-        let index = state.todos.findIndex(
-          (todo) => todo.id === action.meta.arg[i]
-        );
-        state.todos.splice(index, 1);
-      }
-    },
-    [deleteTodos.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.error = action.payload;
-    },
+    deleteTodoById(payload);
   }
-});
+);
 
-````
+// extra reducer
+ builder
+      .addCase(deleteTodos.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteTodos.fulfilled, (state, action) => {
+        state.isLoading = false;
+        deleteTodo(state, action);
+      })
+      .addCase(deleteTodos.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      });
+```
+
+#### api.js
+
+```javaScript
+function deleteTodoById(payload) {
+  for (let i = 0; i < payload.length; i++) {
+    axios
+      .delete(process.env.REACT_APP_HOST + `/api/todos/${payload[i]}`)
+
+      .then((res) => {
+        // console.log(res);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }
+}
+
+function deleteTodo(state, action) {
+  const length = action.meta.arg.length;
+  for (let i = 0; i < length; i++) {
+    let index = state.todos.findIndex((todo) => todo.id === action.meta.arg[i]);
+    state.todos.splice(index, 1);
+  }
+}
+```
 
 #### 동작원리
 
@@ -266,78 +316,115 @@ json-server db.json --routes routes.json --port 3001
 - extraReducer에서 todo.id와 action의 payload에 담긴 id 배열을 비교하여 splice()로 삭제되도록 반복문 실행
 
 </br>
-  
-## 5. List size - 5로 페이지네이션 
-  
-#### List.jsx
-  
+
+## 5. List size - 5로 페이지네이션
+
+#### TodoList.jsx
+
 ```javaScript
-  
-  //todos = 전체 todo 데이터
-  // 키워드 search시 전체 투두를 필터
-  const filteredTodos =
-    todos &&
-    todos.filter((todo) => {
-      if (query === "") return todos;
-      const todoo = todo.text || "";
-      return todoo.toLowerCase().includes(query && query.toLowerCase());
-    });
-  // 날짜별 오름차순 정렬
-  const sortedTodos = filteredTodos.sort(
-    (a, b) => new Date(a.deadLine) - new Date(b.deadLine)
-  );
-  // 각 페이지에서 보여질 투두 배열
-  const currentTodos = sortedTodos?.slice(indexOfFirstTodo, indexOfLastTodo);
+
   // 페이지 나누기
   const pageNumber = [];
-  const totalTodos = todos.length;
-  for (let i = 1; i <= Math.ceil(totalTodos / todosPerPage); i++) {
-    pageNumber.push(i);
-  }
-  //...생략
-  return (
-    <>
-      {currentTodos.map((todo, idx) => {
-        return <Todo props={props} todo={todo} key={todo.id} idx={idx} />;
-      })}
-      <StPageNumberUl>
-        {pageNumber.map((pageNum) => {
-          return (
-            <Pagination
+  page.numberArray(error ? localTodos : todos, pageNumber);
+
+// ...생략
+return (
+<>
+{currentTodos &&
+currentTodos.map((todo) => {
+return <Todo props={props} todo={todo} key={todo.id} error={error} />;
+})}
+<StPageNumberUl>
+{pageNumber.map((pageNum) => {
+return (
+<Pagination
               pageNum={pageNum}
               key={pageNum}
               paginate={paginate}
               selected={currentPage}
-            />);
-        })}
-      </StPageNumberUl>
-    </>
-  );
+            />
+);
+})}
+</StPageNumberUl>
+</>
+);
+};
 
-````
+export default TodoList;
+
+```
+
+#### Pagination.jsx
+
+```javaScript
+
+  const Pagination = ({ pageNum, paginate, selected }) => {
+  return (
+    <StNumber
+      key={pageNum}
+      onClick={() => paginate(pageNum)}
+      style={
+        selected === pageNum
+          ? { background: "#ececec", fontWeight: "900" }
+          : { background: "#ffffff" }
+      }
+    >
+      {pageNum}
+    </StNumber>
+  );
+};
+
+export default Pagination;
+
+```
+
+#### page.js
+
+```javaScript
+
+  paginate(pageNumber, key) {
+    key(pageNumber);
+  },
+
+  number(value) {
+    return Math.ceil(value.length / TODOS_PER_PAGE);
+  },
+
+  numberArray(value, array) {
+    for (let i = 1; i <= page.number(value); i++) {
+      array.push(i);
+    }
+    return array;
+  },
+
+```
+
 #### 동작 원리
 
-- 전체 todo 배열 = todos
+- 검색 키워드로 filtered, paginated array = currentTodos
+- API offline시 localTodos(로컬스토리지 데이터), 아닐 시 todos(서버 데이터)로 데이터 처리
 - 검색 키워드 = query
-- 키워드가 들어간 데이터를 전체 배열에서 filter하는 배열을 filteredTodos에 저장
-- filteredTodos 오름차순 정렬
-- 페이지를 todos의 길이와 한 화면에 보여질 todo의 갯수(5)로 나누어 pageNumber에 페이지 수(i)를 배열로 저장
-- 각 페이지에 보여질 todo 배열 = currentTodos에 저장
-- map이용해 currentTodos, pageNumber를 화면에 표시
+- filterByQuery(): 키워드가 들어간 데이터를 전체 배열에서 filter하는 배열을 반환
+- sortByDate(): 오름차순 정렬한 배열 반환
+- numberArray(): 배열의 길이와 한 화면에 보여질 todo의 갯수(5)로 나누어 pageNumber에 페이지 수(i)를 배열로 저장
+- showCurrentTodos(): 각 페이지에 보여질 To-do를 반환
+- map()이용 currentTodos, pageNumber를 화면에 표시
   </br>
 
 ## 6. 검색필터, 검색어 브라우저 닫아도 남도록하기
+
 #### Form.jsx
+
 ```javaScript
 
   // 검색어 input value에 initialState를 localStorage에 저장한 데이터로 지정
-  const [query, setQuery] = useState(localStorage.getItem("search"));
+const [query, setQuery] = useState(() => localStorage.getItem("search"));
   const handleSearch = (e) => {
     setQuery(e.target.value);
     localStorage.setItem("search", e.target.value);
   };
 
-````
+```
 
 #### List.jsx
 
@@ -363,10 +450,11 @@ json-server db.json --routes routes.json --port 3001
 - query의 initialState는 localStorage에서 가져온 “search”의 value ⇒ 브라우저 닫았다 켜도 키워드 유지
 
  </br>
- 
+
 ## 7. API가 offline인 경우 로컬스토리지로 작동될 수 있게 처리
-### fetch, get 
- 
+
+### fetch, get
+
 미들웨어에서 catch로 AxiosError가 잡히면 extraReducer에서 state.error에 저장하여 useSelector를 이용해 error일때 로컬스토리지에서 가져온 데이터를 보여주도록 구현했습니다.
 
 #### List.jsx
@@ -446,5 +534,5 @@ TodoDetail.jsx(todo 상세페이지)에서 error 일 때 localStorage에 저장�
 ```
 
 </br>
- 
+
 ## [회고 : 잘 안된것, 새롭게 알게된 것들 톺아보기](https://nonjee888.tistory.com/entry/%EC%9E%98-%EC%95%88-%EB%90%98%EC%97%88%EB%8D%98%EA%B2%83-%ED%86%BA%EC%95%84%EB%B3%B4%EA%B8%B0)
