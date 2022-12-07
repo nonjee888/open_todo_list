@@ -46,7 +46,7 @@ json-server db.json --routes routes.json --port 3001
 #### Form.jsx
 
 ```javaScript
-
+// ...생략
   const onSubmitHandler = (e) => {
     e.preventDefault();
     let req = {
@@ -62,13 +62,14 @@ json-server db.json --routes routes.json --port 3001
     setText("");
     setDeadLine("");
   };
+// ...생략
 
 ```
 
 #### storage.js
 
 ```javaScript
-
+// ...생략
   const storage = {
   save(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
@@ -86,7 +87,7 @@ json-server db.json --routes routes.json --port 3001
     todoArr.push(req);
     storage.save(key, todoArr);
   },
-  //...생략
+//...생략
 }
 
 ```
@@ -110,14 +111,14 @@ json-server db.json --routes routes.json --port 3001
 #### TodoDetail.jsx
 
 ```javaScript
-
+// ...생략
   useEffect(() => {
     date.alertfrom3DaysLeft(detail?.deadLine);
     if (error?.message === "Network Error") {
       date.alertfrom3DaysLeft(localTodosDetail[0]?.deadLine);
     }
   }, [(error && localTodosDetail[0]?.deadLine) || detail.deadLine]);
-
+// ...생략
 ```
 
 #### date.js
@@ -168,7 +169,7 @@ export { todaysDate, today, date, MILLISECONDS };
 #### EditTodoModal.jsx
 
 ```javaScript
-
+// ...생략
   const initialState = {
     id: error === null ? detail.id : localTodosDetail[0].id,
     text: error === null ? detail.text : localTodosDetail[0].text,
@@ -176,13 +177,13 @@ export { todaysDate, today, date, MILLISECONDS };
   };
   const [text, setText] = useState(initialState.text);
   const [deadLine, setDeadLine] = useState(initialState.deadLine);
-
+// ...생략
 ```
 
 #### storage.js
 
 ```javaScript
-
+// ...생략
    updateById(key, value, req) {
     // 로컬스토리지의 투두들을 리스트로 변환
     const localTodos = storage.parseToArray(key);
@@ -193,7 +194,7 @@ export { todaysDate, today, date, MILLISECONDS };
     // 교체된 배열 다시 로컬스토리지 저장
     storage.save(key, localTodos);
   },
-
+// ...생략
 ```
 
 #### 동작 원리
@@ -211,7 +212,7 @@ export { todaysDate, today, date, MILLISECONDS };
 #### Form.jsx
   
 ```javaScript
-  
+// ...생략  
     const onDeleteHandler = () => {
     if (checkedItems.length > 0 && window.confirm("삭제할까요?") === true) {
       // LocalStorage Delete
@@ -224,12 +225,13 @@ export { todaysDate, today, date, MILLISECONDS };
       return false;
     }
   };
+// ...생략
 ```
 
 #### storage.jsx
 
 ```javaScript
-
+// ...생략
   deleteById(checkedItems) {
     // 로컬스토리지의 투두들을 리스트로 변환
     const localTodos = storage.parseToArray("allTodos");
@@ -245,38 +247,42 @@ export { todaysDate, today, date, MILLISECONDS };
       storage.save("allTodos", localTodos);
     }
   },
+// ...생략
 ```
 
 #### todos.js (Redux module)
 
 ```javaScript
-
+// ...생략
 // middleware
 export const deleteTodos = createAsyncThunk(
-  "todos/deleteTodos",
-  async (payload) => {
-    deleteTodoById(payload);
-  }
+    "todos/deleteTodos",
+    async (payload) => {
+      deleteTodoById(payload);
+    }
 );
 
-// extra reducer
- builder
-      .addCase(deleteTodos.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(deleteTodos.fulfilled, (state, action) => {
-        state.isLoading = false;
-        deleteTodo(state, action);
-      })
-      .addCase(deleteTodos.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      });
+  extraReducers: (builder) => {
+// ...생략
+    builder
+        .addCase(deleteTodos.pending, (state) => {
+          state.isLoading = true;
+        })
+        .addCase(deleteTodos.fulfilled, (state, action) => {
+          state.isLoading = false;
+          deleteTodo(state, action);
+        })
+        .addCase(deleteTodos.rejected, (state, action) => {
+          state.isLoading = false;
+          state.error = action.payload;
+        });
+// ...생략
 ```
 
 #### api.js
 
 ```javaScript
+// ...생략
 function deleteTodoById(payload) {
   for (let i = 0; i < payload.length; i++) {
     axios
@@ -291,13 +297,14 @@ function deleteTodoById(payload) {
   }
 }
 
-function deleteTodo(state, action) {
-  const length = action.meta.arg.length;
-  for (let i = 0; i < length; i++) {
-    let index = state.todos.findIndex((todo) => todo.id === action.meta.arg[i]);
-    state.todos.splice(index, 1);
+  function deleteTodo(state, action) {
+    const length = action.meta.arg.length;
+    for (let i = 0; i < length; i++) {
+      let index = state.todos.findIndex((todo) => todo.id === action.meta.arg[i]);
+      state.todos.splice(index, 1);
+    }
   }
-}
+// ...생략
 ```
 
 #### 동작원리
@@ -322,32 +329,32 @@ function deleteTodo(state, action) {
 #### TodoList.jsx
 
 ```javaScript
-
-  // 페이지 나누기
+// ...생략
+// 페이지 나누기
   const pageNumber = [];
   page.numberArray(error ? localTodos : todos, pageNumber);
 
 // ...생략
-return (
-<>
-{currentTodos &&
-currentTodos.map((todo) => {
-return <Todo props={props} todo={todo} key={todo.id} error={error} />;
-})}
-<StPageNumberUl>
-{pageNumber.map((pageNum) => {
-return (
-<Pagination
+  return (
+    <>
+      {currentTodos &&
+        currentTodos.map((todo) => {
+          return <Todo props={props} todo={todo} key={todo.id} error={error} />;
+        })}
+      <StPageNumberUl>
+        {pageNumber.map((pageNum) => {
+          return (
+            <Pagination
               pageNum={pageNum}
               key={pageNum}
               paginate={paginate}
               selected={currentPage}
             />
-);
-})}
-</StPageNumberUl>
-</>
-);
+          );
+        })}
+      </StPageNumberUl>
+    </>
+  );
 };
 
 export default TodoList;
@@ -357,7 +364,7 @@ export default TodoList;
 #### Pagination.jsx
 
 ```javaScript
-
+// ...생략
   const Pagination = ({ pageNum, paginate, selected }) => {
   return (
     <StNumber
@@ -381,7 +388,7 @@ export default Pagination;
 #### page.js
 
 ```javaScript
-
+// ...생략
   paginate(pageNumber, key) {
     key(pageNumber);
   },
@@ -396,7 +403,7 @@ export default Pagination;
     }
     return array;
   },
-
+// ...생략
 ```
 
 #### 동작 원리
@@ -416,22 +423,22 @@ export default Pagination;
 #### Form.jsx
 
 ```javaScript
-
-  // 검색어 input value에 initialState를 localStorage에 저장한 데이터로 지정
+// ...생략
+// 검색어 input value에 initialState를 localStorage에 저장한 데이터로 지정
   const [query, setQuery] = useState(() => localStorage.getItem("search"));
 
   const handleSearch = (e) => {
     setQuery(e.target.value);
     storage.saveQuery("search", e.target.value);
   };
-
+// ...생략
 ```
 
 #### page.js
 
 ```javaScript
-
-  // 키워드 search시 전체 투두를 필터, 검색어 없으면 전체 배열 보여줌
+// ...생략
+// 키워드 search시 전체 투두를 필터, 검색어 없으면 전체 배열 보여줌
   filterByQuery(array, query) {
     return (
       array &&
@@ -442,7 +449,7 @@ export default Pagination;
       })
     );
   },
-
+// ...생략
 ```
 
 #### 동작 원리
