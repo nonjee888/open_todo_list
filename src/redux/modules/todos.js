@@ -110,6 +110,7 @@ export const todos = createSlice({
       .addCase(deleteTodos.fulfilled, (state, action) => {
         state.isLoading = false;
         deleteTodo(state, action);
+        console.log(action);
       })
       .addCase(deleteTodos.rejected, (state, action) => {
         state.isLoading = false;

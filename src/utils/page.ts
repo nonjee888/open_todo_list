@@ -22,7 +22,7 @@ const page = {
 
   sortByDate(array, query) {
     return this.filterByQuery(array, query).sort(
-      (a, b) => new Date(a.deadLine) - new Date(b.deadLine)
+      (a, b) => new Date(a.deadLine).getDate() - new Date(b.deadLine).getDate()
     );
   },
 
