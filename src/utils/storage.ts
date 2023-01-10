@@ -1,28 +1,37 @@
+type Storage = {
+  key: "allTodos";
+  request: { id: string; text: string; deadLine: string };
+  id: string;
+  checkedItems: string[];
+  queryAlias: "search";
+  searchKeyWord: string;
+};
+
 const storage = {
-  save(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+  save({key, request}:Storage) {
+    localStorage.setItem(key, JSON.stringify(request));
   },
 
-  parseToArray(key) {
+  parseToArray({key}: Storage) {
     return JSON.parse(localStorage.getItem(key));
   },
 
-  addTodo(key, req) {
+  addTodo({key, request}: Storage) {
     // 로컬스토리지에 저장 할 배열 생성
     let todoArr = [];
     // 로컬스토리지에 추가
-    todoArr = storage.parseToArray(key) || [];
-    todoArr.push(req);
+    todoArr = storage.parseToArray(key: Storage) || [];
+    todoArr.push(request);
     storage.save(key, todoArr);
   },
 
-  updateById(key, value, req) {
+  updateById(key, id, request) {
     // 로컬스토리지의 투두들을 리스트로 변환
     const localTodos = storage.parseToArray(key);
     // 수정할 투두 index 찾기
-    const index = localTodos.findIndex((todo) => todo.id === value);
+    const index = localTodos.findIndex((todo) => todo.id === id);
     // 수정할 투두로 배열 원소 교체
-    localTodos.splice(index, 1, req);
+    localTodos.splice(index, 1, request);
     // 교체된 배열 다시 로컬스토리지 저장
     storage.save(key, localTodos);
   },
@@ -43,7 +52,7 @@ const storage = {
     }
   },
 
-  selectById(id) {
+  selectById(id: string) {
     const localTodos = storage.parseToArray("allTodos");
     return (
       localTodos &&
@@ -53,8 +62,8 @@ const storage = {
     );
   },
 
-  saveQuery(key, value) {
-    localStorage.setItem(key, value);
+  saveQuery(queryAlias, searchKeyWord) {
+    localStorage.setItem(queryAlias, searchKeyWord);
   },
 };
 
